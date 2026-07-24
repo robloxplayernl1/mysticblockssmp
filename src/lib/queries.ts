@@ -26,6 +26,15 @@ export type StaffRow = {
   sort_order: number;
 };
 
+export type RankRow = {
+  id: string;
+  name: string;
+  requirement: string;
+  description: string;
+  color: string;
+  sort_order: number;
+};
+
 export const settingsQuery = queryOptions({
   queryKey: ["site_settings"],
   queryFn: async (): Promise<SiteSettings> => {
@@ -69,6 +78,18 @@ export const staffQuery = queryOptions({
       .order("sort_order", { ascending: true });
     if (error) throw error;
     return (data ?? []) as StaffRow[];
+  },
+});
+
+export const ranksQuery = queryOptions({
+  queryKey: ["ranks"],
+  queryFn: async (): Promise<RankRow[]> => {
+    const { data, error } = await supabase
+      .from("ranks" as never)
+      .select("id, name, requirement, description, color, sort_order")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as unknown as RankRow[];
   },
 });
 
