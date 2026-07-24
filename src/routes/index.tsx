@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
 import { settingsQuery, eventsQuery } from "@/lib/queries";
+import { ServerStatus } from "@/components/server-status";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,10 +12,10 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP wereld. IP: mysticblockssmp.mcsh.io. Join onze Discord community!",
+          "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!",
       },
       { property: "og:title", content: "MysticBlocksSMP · Magische Minecraft SMP" },
-      { property: "og:description", content: "Sluit je aan bij onze magische Minecraft SMP wereld." },
+      { property: "og:description", content: "Magische Minecraft SMP wereld — Java + Bedrock support." },
     ],
   }),
   component: Index,
@@ -23,12 +24,19 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { data: settings } = useQuery(settingsQuery);
   const { data: events } = useQuery(eventsQuery);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   const ip = settings?.server_ip ?? "mysticblockssmp.mcsh.io";
+  const bedrockPort = "19132";
   const upcoming = (events ?? [])
     .filter((e) => new Date(e.event_date).getTime() > Date.now() - 24 * 60 * 60 * 1000)
     .slice(0, 3);
+
+  const copy = (val: string, key: string) => {
+    navigator.clipboard.writeText(val);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 1500);
+  };
 
   return (
     <SiteLayout>
@@ -37,9 +45,8 @@ function Index() {
           <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/20 blur-3xl" />
         </div>
         <div className="relative max-w-5xl mx-auto text-center px-6 pt-24 pb-32">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-xs text-primary mb-6">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Server is online
+          <div className="mb-6 flex justify-center">
+            <ServerStatus />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-glow mb-6">
             {settings?.hero_title ?? "MysticBlocksSMP"}
@@ -53,16 +60,15 @@ function Index() {
               <p className="text-lg font-mono text-primary">{ip}</p>
             </div>
             <button
-              onClick={() => {
-                navigator.clipboard.writeText(ip);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 1500);
-              }}
+              onClick={() => copy(ip, "ip")}
               className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-glow"
             >
-              {copied ? "Gekopieerd ✓" : "Kopieer IP"}
+              {copied === "ip" ? "Gekopieerd ✓" : "Kopieer IP"}
             </button>
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Ondersteunt Java Edition én Bedrock (crossplay)
+          </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
               href={settings?.discord_link ?? "#"}
@@ -78,20 +84,62 @@ function Index() {
 
       <section className="max-w-5xl mx-auto px-6 py-16">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Hoe join je?</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { n: 1, t: "Open Minecraft", d: "Start Minecraft Java Edition (1.20+)." },
-            { n: 2, t: "Voeg server toe", d: `Ga naar Multiplayer → Add Server en gebruik het IP: ${ip}` },
-            { n: 3, t: "Speel!", d: "Verbind, en betreed onze mystieke wereld." },
-          ].map((s) => (
-            <div key={s.n} className="p-6 rounded-2xl bg-card border border-border hover:border-primary/50 transition group">
-              <div className="w-10 h-10 rounded-lg bg-primary/20 border border-primary/40 flex items-center justify-center text-primary font-bold mb-4 group-hover:shadow-glow transition">
-                {s.n}
-              </div>
-              <h3 className="font-semibold text-lg mb-2">{s.t}</h3>
-              <p className="text-sm text-muted-foreground">{s.d}</p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="p-6 rounded-2xl bg-card border border-border">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">🖥️</span>
+              <h3 className="font-semibold text-lg">Java Edition</h3>
             </div>
-          ))}
+            <ol className="space-y-2 text-sm text-muted-foreground mb-4 list-decimal list-inside">
+              <li>Open Minecraft Java (1.20+)</li>
+              <li>Multiplayer → Add Server</li>
+              <li>Plak het IP hieronder en join</li>
+            </ol>
+            <div className="flex items-center justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border">
+              <span className="font-mono text-sm text-primary truncate">{ip}</span>
+              <button onClick={() => copy(ip, "java")} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
+                {copied === "java" ? "✓" : "Kopieer"}
+              </button>
+            </div>
+          </div>
+          <div className="p-6 rounded-2xl bg-card border border-border">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">📱</span>
+              <h3 className="font-semibold text-lg">Bedrock Edition</h3>
+            </div>
+            <ol className="space-y-2 text-sm text-muted-foreground mb-4 list-decimal list-inside">
+              <li>Open Minecraft Bedrock (PC, mobiel, console)</li>
+              <li>Servers tab → Server toevoegen</li>
+              <li>Vul het adres en de poort in</li>
+            </ol>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Adres</p>
+                  <p className="font-mono text-sm text-primary truncate">{ip}</p>
+                </div>
+                <button onClick={() => copy(ip, "be-ip")} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
+                  {copied === "be-ip" ? "✓" : "Kopieer"}
+                </button>
+              </div>
+              <div className="flex items-center justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Poort</p>
+                  <p className="font-mono text-sm text-primary">{bedrockPort}</p>
+                </div>
+                <button onClick={() => copy(bedrockPort, "be-port")} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
+                  {copied === "be-port" ? "✓" : "Kopieer"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 p-6 rounded-2xl border border-primary/30 bg-primary/5 text-center">
+          <h3 className="font-semibold text-lg mb-1">✨ Ranks verdien je door te spelen</h3>
+          <p className="text-sm text-muted-foreground">
+            Geen webshop — hoe meer speeltijd je hebt, hoe hoger je rank. Simpel en eerlijk.
+          </p>
         </div>
       </section>
 

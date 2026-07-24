@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
-import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiStatusRouteImport } from './routes/api/status'
 
 const StaffRoute = StaffRouteImport.update({
   id: '/staff',
@@ -24,11 +24,6 @@ const StaffRoute = StaffRouteImport.update({
 const RulesRoute = RulesRouteImport.update({
   id: '/rules',
   path: '/rules',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RanksRoute = RanksRouteImport.update({
-  id: '/ranks',
-  path: '/ranks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -46,47 +41,59 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStatusRoute = ApiStatusRouteImport.update({
+  id: '/api/status',
+  path: '/api/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
-  '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
+  '/api/status': typeof ApiStatusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
-  '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
+  '/api/status': typeof ApiStatusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
-  '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
+  '/api/status': typeof ApiStatusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
+  fullPaths: '/' | '/admin' | '/events' | '/rules' | '/staff' | '/api/status'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
-  id: '__root__' | '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
+  to: '/' | '/admin' | '/events' | '/rules' | '/staff' | '/api/status'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/events'
+    | '/rules'
+    | '/staff'
+    | '/api/status'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   EventsRoute: typeof EventsRoute
-  RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
+  ApiStatusRoute: typeof ApiStatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -103,13 +110,6 @@ declare module '@tanstack/react-router' {
       path: '/rules'
       fullPath: '/rules'
       preLoaderRoute: typeof RulesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ranks': {
-      id: '/ranks'
-      path: '/ranks'
-      fullPath: '/ranks'
-      preLoaderRoute: typeof RanksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -133,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/status': {
+      id: '/api/status'
+      path: '/api/status'
+      fullPath: '/api/status'
+      preLoaderRoute: typeof ApiStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -140,9 +147,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   EventsRoute: EventsRoute,
-  RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
+  ApiStatusRoute: ApiStatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

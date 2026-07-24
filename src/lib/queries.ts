@@ -26,15 +26,6 @@ export type StaffRow = {
   sort_order: number;
 };
 
-export type RankRow = {
-  id: string;
-  name: string;
-  description: string;
-  perks: string;
-  price: string;
-  sort_order: number;
-};
-
 export const settingsQuery = queryOptions({
   queryKey: ["site_settings"],
   queryFn: async (): Promise<SiteSettings> => {
@@ -81,14 +72,18 @@ export const staffQuery = queryOptions({
   },
 });
 
-export const ranksQuery = queryOptions({
-  queryKey: ["ranks"],
-  queryFn: async (): Promise<RankRow[]> => {
-    const { data, error } = await supabase
-      .from("ranks")
-      .select("id, name, description, perks, price, sort_order")
-      .order("sort_order", { ascending: true });
-    if (error) throw error;
-    return (data ?? []) as RankRow[];
+export type ServerStatus = {
+  java: { online: boolean; players: { online: number; max: number } };
+  bedrock: { online: boolean; players: { online: number; max: number } };
+};
+
+export const statusQuery = queryOptions({
+  queryKey: ["server_status"],
+  queryFn: async (): Promise<ServerStatus> => {
+    const res = await fetch("/api/status");
+    if (!res.ok) throw new Error("status fetch failed");
+    return (await res.json()) as ServerStatus;
   },
+  refetchInterval: 60_000,
+  staleTime: 30_000,
 });

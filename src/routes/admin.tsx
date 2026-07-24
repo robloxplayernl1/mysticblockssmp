@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, type SiteSettings } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, type SiteSettings } from "@/lib/queries";
 import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
 import {
   updateSettings,
@@ -11,8 +11,6 @@ import {
   deleteEvent,
   createStaff,
   deleteStaff,
-  createRank,
-  deleteRank,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -94,12 +92,11 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "staff">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
     { id: "staff" as const, label: "Staff" },
-    { id: "ranks" as const, label: "Ranks" },
   ];
 
   return (
@@ -131,7 +128,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "settings" && <SettingsPanel />}
       {tab === "events" && <EventsPanel />}
       {tab === "staff" && <StaffPanel />}
-      {tab === "ranks" && <RanksPanel />}
     </div>
   );
 }
@@ -308,65 +304,6 @@ function StaffPanel() {
               onClick={async () => {
                 await delFn({ data: { id: s.id } });
                 await qc.invalidateQueries({ queryKey: ["staff"] });
-              }}
-            >
-              Verwijder
-            </button>
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-
-function RanksPanel() {
-  const qc = useQueryClient();
-  const { data: ranks } = useQuery(ranksQuery);
-  const createFn = useServerFn(createRank);
-  const delFn = useServerFn(deleteRank);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [perks, setPerks] = useState("");
-  const [price, setPrice] = useState("");
-
-  return (
-    <Panel title="Ranks beheren">
-      <div className="grid md:grid-cols-2 gap-3">
-        <Field label="Naam"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
-        <Field label="Prijs"><input className={inputCls} value={price} onChange={(e) => setPrice(e.target.value)} placeholder="€4,99 of Gratis" /></Field>
-        <div className="md:col-span-2">
-          <Field label="Beschrijving"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
-        </div>
-        <div className="md:col-span-2">
-          <Field label="Perks (één per regel)"><textarea rows={4} className={inputCls} value={perks} onChange={(e) => setPerks(e.target.value)} /></Field>
-        </div>
-      </div>
-      <button
-        className={btnCls}
-        onClick={async () => {
-          if (!name) return;
-          await createFn({ data: { name, description, perks, price, sort_order: (ranks?.length ?? 0) + 1 } });
-          setName(""); setDescription(""); setPerks(""); setPrice("");
-          await qc.invalidateQueries({ queryKey: ["ranks"] });
-        }}
-      >
-        Rank toevoegen
-      </button>
-      <div className="space-y-2 pt-4">
-        {ranks?.map((r) => (
-          <div key={r.id} className="flex items-start justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
-            <div>
-              <p className="font-medium">
-                {r.name} <span className="text-primary text-sm">· {r.price}</span>
-              </p>
-              <p className="text-sm text-muted-foreground">{r.description}</p>
-              <p className="text-xs text-muted-foreground whitespace-pre-wrap mt-1">{r.perks}</p>
-            </div>
-            <button
-              className="text-sm text-destructive hover:underline"
-              onClick={async () => {
-                await delFn({ data: { id: r.id } });
-                await qc.invalidateQueries({ queryKey: ["ranks"] });
               }}
             >
               Verwijder
