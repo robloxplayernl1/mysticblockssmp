@@ -84,32 +84,3 @@ export const deleteStaff = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
-
-// ---------- Ranks ----------
-const rankSchema = z.object({
-  name: z.string().trim().min(1).max(80),
-  description: z.string().trim().max(500),
-  perks: z.string().trim().max(1000),
-  price: z.string().trim().max(50),
-  sort_order: z.number().int().min(0).max(9999).default(0),
-});
-
-export const createRank = createServerFn({ method: "POST" })
-  .inputValidator((data: z.infer<typeof rankSchema>) => rankSchema.parse(data))
-  .handler(async ({ data }) => {
-    await (await import("./admin-session.server")).requireAdminSession();
-    const db = await admin();
-    const { error } = await db.from("ranks").insert(data);
-    if (error) throw new Error(error.message);
-    return { ok: true as const };
-  });
-
-export const deleteRank = createServerFn({ method: "POST" })
-  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
-  .handler(async ({ data }) => {
-    await (await import("./admin-session.server")).requireAdminSession();
-    const db = await admin();
-    const { error } = await db.from("ranks").delete().eq("id", data.id);
-    if (error) throw new Error(error.message);
-    return { ok: true as const };
-  });
