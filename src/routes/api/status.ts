@@ -27,11 +27,8 @@ export const Route = createFileRoute("/api/status")({
     handlers: {
       GET: async () => {
         const host = "mysticblockssmp.mcsh.io";
-        const [java, bedrock] = await Promise.all([
-          fetchStatus(`https://api.mcsrvstat.us/3/${host}`),
-          fetchStatus(`https://api.mcsrvstat.us/bedrock/3/${host}`),
-        ]);
-        return new Response(JSON.stringify({ java, bedrock }), {
+        const java = await fetchStatus(`https://api.mcsrvstat.us/3/${host}`);
+        return new Response(JSON.stringify({ java }), {
           headers: {
             "content-type": "application/json",
             "cache-control": "public, max-age=30, s-maxage=30",

@@ -74,7 +74,6 @@ export const staffQuery = queryOptions({
 
 export type ServerStatus = {
   java: { online: boolean; players: { online: number; max: number } };
-  bedrock: { online: boolean; players: { online: number; max: number } };
 };
 
 export const statusQuery = queryOptions({
