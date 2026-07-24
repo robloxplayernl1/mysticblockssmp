@@ -26,9 +26,8 @@ export function ServerStatus() {
     );
   }
   return (
-    <div className="flex flex-wrap justify-center gap-2">
-      <Badge label="Java" online={data.java.online} players={data.java.players} />
-      <Badge label="Bedrock" online={data.bedrock.online} players={data.bedrock.players} />
+    <div className="flex justify-center">
+      <Badge label="Server" online={data.java.online} players={data.java.players} />
     </div>
   );
 }
