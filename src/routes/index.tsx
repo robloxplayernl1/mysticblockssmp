@@ -14,8 +14,8 @@ export const Route = createFileRoute("/")({
         content:
           "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!",
       },
-      { property: "og:title", content: "MysticBlocksSMP · Magische Minecraft SMP" },
-      { property: "og:description", content: "Magische Minecraft SMP wereld — Java + Bedrock support." },
+      { property: "og:title", content: "MysticBlocksSMP · Magische Minecraft SMP Server" },
+      { property: "og:description", content: "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
     ],
   }),
   component: Index,

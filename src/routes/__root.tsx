@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "MysticBlocksSMP · Magische Minecraft SMP Server" },
+      { name: "description", content: "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "MysticBlocksSMP · Magische Minecraft SMP Server" },
+      { property: "og:description", content: "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "MysticBlocksSMP · Magische Minecraft SMP Server" },
+      { name: "twitter:description", content: "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f7796eb0-914e-46ee-89f0-e567bcd41d9f/id-preview-ae7b98d8--b1d1542a-7380-463a-aab4-d927051b2a86.lovable.app-1784881295755.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f7796eb0-914e-46ee-89f0-e567bcd41d9f/id-preview-ae7b98d8--b1d1542a-7380-463a-aab4-d927051b2a86.lovable.app-1784881295755.png" },
     ],
     links: [
       {
