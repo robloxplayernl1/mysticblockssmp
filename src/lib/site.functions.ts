@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireAdminSession } from "./admin.functions";
+
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -20,7 +20,7 @@ const settingsSchema = z.object({
 export const updateSettings = createServerFn({ method: "POST" })
   .inputValidator((data: z.infer<typeof settingsSchema>) => settingsSchema.parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db
       .from("site_settings")
@@ -40,7 +40,7 @@ const eventSchema = z.object({
 export const createEvent = createServerFn({ method: "POST" })
   .inputValidator((data: z.infer<typeof eventSchema>) => eventSchema.parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("events").insert(data);
     if (error) throw new Error(error.message);
@@ -50,7 +50,7 @@ export const createEvent = createServerFn({ method: "POST" })
 export const deleteEvent = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("events").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -68,7 +68,7 @@ const staffSchema = z.object({
 export const createStaff = createServerFn({ method: "POST" })
   .inputValidator((data: z.infer<typeof staffSchema>) => staffSchema.parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("staff").insert(data);
     if (error) throw new Error(error.message);
@@ -78,7 +78,7 @@ export const createStaff = createServerFn({ method: "POST" })
 export const deleteStaff = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("staff").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -97,7 +97,7 @@ const rankSchema = z.object({
 export const createRank = createServerFn({ method: "POST" })
   .inputValidator((data: z.infer<typeof rankSchema>) => rankSchema.parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("ranks").insert(data);
     if (error) throw new Error(error.message);
@@ -107,7 +107,7 @@ export const createRank = createServerFn({ method: "POST" })
 export const deleteRank = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
-    await requireAdminSession();
+    await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("ranks").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
