@@ -8,7 +8,6 @@ const nav = [
   { to: "/events", label: "Events" },
   { to: "/rules", label: "Regels" },
   { to: "/staff", label: "Staff" },
-  { to: "/ranks", label: "Ranks" },
 ];
 
 export function SiteLayout({ children }: { children: ReactNode }) {
