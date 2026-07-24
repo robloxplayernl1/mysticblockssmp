@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          created_at: string
+          description: string
+          event_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          event_date: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          event_date?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      ranks: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          name: string
+          perks: string
+          price: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          perks?: string
+          price?: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          perks?: string
+          price?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          announcement: string
+          discord_link: string
+          hero_subtitle: string
+          hero_title: string
+          id: string
+          rules_text: string
+          server_ip: string
+          updated_at: string
+        }
+        Insert: {
+          announcement?: string
+          discord_link?: string
+          hero_subtitle?: string
+          hero_title?: string
+          id?: string
+          rules_text?: string
+          server_ip?: string
+          updated_at?: string
+        }
+        Update: {
+          announcement?: string
+          discord_link?: string
+          hero_subtitle?: string
+          hero_title?: string
+          id?: string
+          rules_text?: string
+          server_ip?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      staff: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          name: string
+          role: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          role?: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          role?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
