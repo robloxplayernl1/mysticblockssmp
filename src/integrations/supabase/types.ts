@@ -38,6 +38,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ranks: {
+        Row: {
+          color: string
+          created_at: string
+          description: string
+          id: string
+          name: string
+          requirement: string
+          sort_order: number
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          requirement?: string
+          sort_order?: number
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          requirement?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           announcement: string
