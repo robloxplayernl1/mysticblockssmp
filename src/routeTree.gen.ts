@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
-import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,11 +23,6 @@ const StaffRoute = StaffRouteImport.update({
 const RulesRoute = RulesRouteImport.update({
   id: '/rules',
   path: '/rules',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RanksRoute = RanksRouteImport.update({
-  id: '/ranks',
-  path: '/ranks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -51,7 +45,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
-  '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
 }
@@ -59,7 +52,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
-  '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
 }
@@ -68,23 +60,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
-  '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
+  fullPaths: '/' | '/admin' | '/events' | '/rules' | '/staff'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
-  id: '__root__' | '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
+  to: '/' | '/admin' | '/events' | '/rules' | '/staff'
+  id: '__root__' | '/' | '/admin' | '/events' | '/rules' | '/staff'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   EventsRoute: typeof EventsRoute
-  RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
 }
@@ -103,13 +93,6 @@ declare module '@tanstack/react-router' {
       path: '/rules'
       fullPath: '/rules'
       preLoaderRoute: typeof RulesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ranks': {
-      id: '/ranks'
-      path: '/ranks'
-      fullPath: '/ranks'
-      preLoaderRoute: typeof RanksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -140,7 +123,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   EventsRoute: EventsRoute,
-  RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
 }
