@@ -13,6 +13,7 @@ import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StaffRoute = StaffRouteImport.update({
@@ -35,6 +36,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -65,14 +74,15 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/events' | '/ranks' | '/rules' | '/staff'
+  fullPaths: '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/events' | '/ranks' | '/rules' | '/staff'
-  id: '__root__' | '/' | '/events' | '/ranks' | '/rules' | '/staff'
+  to: '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
+  id: '__root__' | '/' | '/admin' | '/events' | '/ranks' | '/rules' | '/staff'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   EventsRoute: typeof EventsRoute
   RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
@@ -109,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +138,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   EventsRoute: EventsRoute,
   RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
