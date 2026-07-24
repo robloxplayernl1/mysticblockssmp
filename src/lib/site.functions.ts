@@ -84,3 +84,63 @@ export const deleteStaff = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+const staffUpdateSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().trim().min(1).max(80),
+  role: z.string().trim().min(1).max(80),
+  description: z.string().trim().max(500),
+});
+
+export const updateStaff = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof staffUpdateSchema>) => staffUpdateSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { id, ...rest } = data;
+    const { error } = await db.from("staff").update(rest).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+// ---------- Ranks ----------
+const rankSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  requirement: z.string().trim().max(200),
+  description: z.string().trim().max(500),
+  color: z.string().trim().min(1).max(30),
+  sort_order: z.number().int().min(0).max(9999).default(0),
+});
+
+export const createRank = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof rankSchema>) => rankSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("ranks" as never).insert(data as never);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+const rankUpdateSchema = rankSchema.extend({ id: z.string().uuid() });
+
+export const updateRank = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof rankUpdateSchema>) => rankUpdateSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { id, ...rest } = data;
+    const { error } = await db.from("ranks" as never).update(rest as never).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteRank = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("ranks" as never).delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });

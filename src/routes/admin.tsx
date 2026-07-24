@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, type SiteSettings } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, type SiteSettings, type StaffRow, type RankRow } from "@/lib/queries";
 import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
 import {
   updateSettings,
@@ -11,6 +11,10 @@ import {
   deleteEvent,
   createStaff,
   deleteStaff,
+  updateStaff,
+  createRank,
+  updateRank,
+  deleteRank,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -92,11 +96,12 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
     { id: "staff" as const, label: "Staff" },
+    { id: "ranks" as const, label: "Ranks" },
   ];
 
   return (
@@ -128,6 +133,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "settings" && <SettingsPanel />}
       {tab === "events" && <EventsPanel />}
       {tab === "staff" && <StaffPanel />}
+      {tab === "ranks" && <RanksPanel />}
     </div>
   );
 }
@@ -292,25 +298,170 @@ function StaffPanel() {
       </button>
       <div className="space-y-2 pt-4">
         {staff?.map((s) => (
-          <div key={s.id} className="flex items-center justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
-            <div>
-              <p className="font-medium">
-                {s.name} <span className="text-primary text-sm">· {s.role}</span>
-              </p>
-              <p className="text-sm text-muted-foreground">{s.description}</p>
-            </div>
-            <button
-              className="text-sm text-destructive hover:underline"
-              onClick={async () => {
-                await delFn({ data: { id: s.id } });
-                await qc.invalidateQueries({ queryKey: ["staff"] });
-              }}
-            >
-              Verwijder
-            </button>
-          </div>
+          <StaffRow key={s.id} row={s} onDelete={async () => {
+            await delFn({ data: { id: s.id } });
+            await qc.invalidateQueries({ queryKey: ["staff"] });
+          }} />
         ))}
       </div>
     </Panel>
+  );
+}
+
+function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Promise<void> }) {
+  const qc = useQueryClient();
+  const updateFn = useServerFn(updateStaff);
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(row.name);
+  const [role, setRole] = useState(row.role);
+  const [description, setDescription] = useState(row.description);
+  const [saving, setSaving] = useState(false);
+
+  if (editing) {
+    return (
+      <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
+        <div className="grid md:grid-cols-3 gap-2">
+          <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
+          <input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} />
+          <input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} />
+        </div>
+        <div className="flex gap-2">
+          <button
+            className={btnCls}
+            disabled={saving}
+            onClick={async () => {
+              setSaving(true);
+              try {
+                await updateFn({ data: { id: row.id, name, role, description } });
+                await qc.invalidateQueries({ queryKey: ["staff"] });
+                setEditing(false);
+              } finally { setSaving(false); }
+            }}
+          >Opslaan</button>
+          <button className="text-sm px-3 py-2 rounded-md border border-border hover:bg-secondary transition" onClick={() => {
+            setName(row.name); setRole(row.role); setDescription(row.description); setEditing(false);
+          }}>Annuleren</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
+      <div>
+        <p className="font-medium">
+          {row.name} <span className="text-primary text-sm">· {row.role}</span>
+        </p>
+        <p className="text-sm text-muted-foreground">{row.description}</p>
+      </div>
+      <div className="flex gap-3">
+        <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
+        <button className="text-sm text-destructive hover:underline" onClick={onDelete}>Verwijder</button>
+      </div>
+    </div>
+  );
+}
+
+function RanksPanel() {
+  const qc = useQueryClient();
+  const { data: ranks } = useQuery(ranksQuery);
+  const createFn = useServerFn(createRank);
+  const delFn = useServerFn(deleteRank);
+  const [name, setName] = useState("");
+  const [requirement, setRequirement] = useState("");
+  const [description, setDescription] = useState("");
+  const [color, setColor] = useState("#a78bfa");
+
+  return (
+    <Panel title="Ranks beheren">
+      <div className="grid md:grid-cols-4 gap-3">
+        <Field label="Naam"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
+        <Field label="Vereiste"><input className={inputCls} placeholder="bv. 10 uur speeltijd" value={requirement} onChange={(e) => setRequirement(e.target.value)} /></Field>
+        <Field label="Beschrijving"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+        <Field label="Kleur"><input type="color" className="w-full h-10 rounded-lg bg-input border border-border" value={color} onChange={(e) => setColor(e.target.value)} /></Field>
+      </div>
+      <button
+        className={btnCls}
+        onClick={async () => {
+          if (!name) return;
+          await createFn({ data: { name, requirement, description, color, sort_order: (ranks?.length ?? 0) + 1 } });
+          setName(""); setRequirement(""); setDescription(""); setColor("#a78bfa");
+          await qc.invalidateQueries({ queryKey: ["ranks"] });
+        }}
+      >
+        Rank toevoegen
+      </button>
+      <div className="space-y-2 pt-4">
+        {ranks?.map((r) => (
+          <RankRowEditor key={r.id} row={r} onDelete={async () => {
+            await delFn({ data: { id: r.id } });
+            await qc.invalidateQueries({ queryKey: ["ranks"] });
+          }} />
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function RankRowEditor({ row, onDelete }: { row: RankRow; onDelete: () => void | Promise<void> }) {
+  const qc = useQueryClient();
+  const updateFn = useServerFn(updateRank);
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(row.name);
+  const [requirement, setRequirement] = useState(row.requirement);
+  const [description, setDescription] = useState(row.description);
+  const [color, setColor] = useState(row.color);
+  const [sortOrder, setSortOrder] = useState(row.sort_order);
+  const [saving, setSaving] = useState(false);
+
+  if (editing) {
+    return (
+      <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
+        <div className="grid md:grid-cols-5 gap-2">
+          <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
+          <input className={inputCls} value={requirement} onChange={(e) => setRequirement(e.target.value)} />
+          <input className={inputCls + " md:col-span-2"} value={description} onChange={(e) => setDescription(e.target.value)} />
+          <div className="flex gap-2">
+            <input type="color" className="w-14 h-10 rounded-lg bg-input border border-border" value={color} onChange={(e) => setColor(e.target.value)} />
+            <input type="number" className={inputCls} value={sortOrder} onChange={(e) => setSortOrder(parseInt(e.target.value || "0", 10))} />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <button
+            className={btnCls}
+            disabled={saving}
+            onClick={async () => {
+              setSaving(true);
+              try {
+                await updateFn({ data: { id: row.id, name, requirement, description, color, sort_order: sortOrder } });
+                await qc.invalidateQueries({ queryKey: ["ranks"] });
+                setEditing(false);
+              } finally { setSaving(false); }
+            }}
+          >Opslaan</button>
+          <button className="text-sm px-3 py-2 rounded-md border border-border hover:bg-secondary transition" onClick={() => {
+            setName(row.name); setRequirement(row.requirement); setDescription(row.description); setColor(row.color); setSortOrder(row.sort_order); setEditing(false);
+          }}>Annuleren</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: row.color }} />
+        <div className="min-w-0">
+          <p className="font-medium truncate">
+            {row.name} <span className="text-muted-foreground text-sm">· {row.requirement || "—"}</span>
+          </p>
+          <p className="text-sm text-muted-foreground truncate">{row.description}</p>
+        </div>
+      </div>
+      <div className="flex gap-3 shrink-0">
+        <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
+        <button className="text-sm text-destructive hover:underline" onClick={onDelete}>Verwijder</button>
+      </div>
+    </div>
   );
 }
