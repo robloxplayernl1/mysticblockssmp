@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, type SiteSettings } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, type SiteSettings, type StaffRow, type RankRow } from "@/lib/queries";
 import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
 import {
   updateSettings,
@@ -11,6 +11,10 @@ import {
   deleteEvent,
   createStaff,
   deleteStaff,
+  updateStaff,
+  createRank,
+  updateRank,
+  deleteRank,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -92,11 +96,12 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
     { id: "staff" as const, label: "Staff" },
+    { id: "ranks" as const, label: "Ranks" },
   ];
 
   return (
@@ -128,6 +133,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "settings" && <SettingsPanel />}
       {tab === "events" && <EventsPanel />}
       {tab === "staff" && <StaffPanel />}
+      {tab === "ranks" && <RanksPanel />}
     </div>
   );
 }
