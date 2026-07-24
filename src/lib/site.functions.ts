@@ -1,0 +1,115 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { requireAdminSession } from "./admin.functions";
+
+async function admin() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
+
+// ---------- Site settings ----------
+const settingsSchema = z.object({
+  hero_title: z.string().trim().min(1).max(120),
+  hero_subtitle: z.string().trim().max(300),
+  server_ip: z.string().trim().min(1).max(200),
+  discord_link: z.string().trim().url().max(300),
+  announcement: z.string().trim().max(300),
+  rules_text: z.string().trim().max(5000),
+});
+
+export const updateSettings = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof settingsSchema>) => settingsSchema.parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db
+      .from("site_settings")
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq("id", "main");
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+// ---------- Events ----------
+const eventSchema = z.object({
+  title: z.string().trim().min(1).max(120),
+  description: z.string().trim().max(2000),
+  event_date: z.string().min(1),
+});
+
+export const createEvent = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof eventSchema>) => eventSchema.parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("events").insert(data);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteEvent = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("events").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+// ---------- Staff ----------
+const staffSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  role: z.string().trim().min(1).max(80),
+  description: z.string().trim().max(500),
+  sort_order: z.number().int().min(0).max(9999).default(0),
+});
+
+export const createStaff = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof staffSchema>) => staffSchema.parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("staff").insert(data);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteStaff = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("staff").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+// ---------- Ranks ----------
+const rankSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  description: z.string().trim().max(500),
+  perks: z.string().trim().max(1000),
+  price: z.string().trim().max(50),
+  sort_order: z.number().int().min(0).max(9999).default(0),
+});
+
+export const createRank = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof rankSchema>) => rankSchema.parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("ranks").insert(data);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteRank = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("ranks").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
