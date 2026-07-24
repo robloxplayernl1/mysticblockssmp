@@ -1,0 +1,94 @@
+import { queryOptions } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+export type SiteSettings = {
+  hero_title: string;
+  hero_subtitle: string;
+  server_ip: string;
+  discord_link: string;
+  announcement: string;
+  rules_text: string;
+};
+
+export type EventRow = {
+  id: string;
+  title: string;
+  description: string;
+  event_date: string;
+  created_at: string;
+};
+
+export type StaffRow = {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  sort_order: number;
+};
+
+export type RankRow = {
+  id: string;
+  name: string;
+  description: string;
+  perks: string;
+  price: string;
+  sort_order: number;
+};
+
+export const settingsQuery = queryOptions({
+  queryKey: ["site_settings"],
+  queryFn: async (): Promise<SiteSettings> => {
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text")
+      .eq("id", "main")
+      .maybeSingle();
+    if (error) throw error;
+    return (
+      (data as SiteSettings) ?? {
+        hero_title: "MysticBlocksSMP",
+        hero_subtitle: "",
+        server_ip: "mysticblockssmp.mcsh.io",
+        discord_link: "https://discord.gg/Y4BchzeFJH",
+        announcement: "",
+        rules_text: "",
+      }
+    );
+  },
+});
+
+export const eventsQuery = queryOptions({
+  queryKey: ["events"],
+  queryFn: async (): Promise<EventRow[]> => {
+    const { data, error } = await supabase
+      .from("events")
+      .select("id, title, description, event_date, created_at")
+      .order("event_date", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as EventRow[];
+  },
+});
+
+export const staffQuery = queryOptions({
+  queryKey: ["staff"],
+  queryFn: async (): Promise<StaffRow[]> => {
+    const { data, error } = await supabase
+      .from("staff")
+      .select("id, name, role, description, sort_order")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as StaffRow[];
+  },
+});
+
+export const ranksQuery = queryOptions({
+  queryKey: ["ranks"],
+  queryFn: async (): Promise<RankRow[]> => {
+    const { data, error } = await supabase
+      .from("ranks")
+      .select("id, name, description, perks, price, sort_order")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as RankRow[];
+  },
+});
