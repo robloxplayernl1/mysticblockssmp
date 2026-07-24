@@ -63,38 +63,45 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  /* MysticBlocksSMP mystic purple theme */
+  --background: oklch(0.13 0.05 290);
+  --foreground: oklch(0.96 0.02 300);
+  --card: oklch(0.18 0.07 285);
+  --card-foreground: oklch(0.96 0.02 300);
+  --popover: oklch(0.18 0.07 285);
+  --popover-foreground: oklch(0.96 0.02 300);
+  --primary: oklch(0.68 0.22 305);
+  --primary-foreground: oklch(0.1 0.05 290);
+  --secondary: oklch(0.24 0.08 285);
+  --secondary-foreground: oklch(0.96 0.02 300);
+  --muted: oklch(0.22 0.06 285);
+  --muted-foreground: oklch(0.75 0.05 300);
+  --accent: oklch(0.55 0.25 300);
+  --accent-foreground: oklch(0.98 0.02 300);
+  --destructive: oklch(0.6 0.24 25);
+  --destructive-foreground: oklch(0.98 0.02 300);
+  --border: oklch(0.28 0.08 290 / 60%);
+  --input: oklch(0.24 0.08 285);
+  --ring: oklch(0.68 0.22 305);
+
+  --glow-primary: oklch(0.75 0.25 305);
+  --gradient-mystic: linear-gradient(135deg, oklch(0.13 0.05 290) 0%, oklch(0.22 0.12 290) 50%, oklch(0.32 0.18 305) 100%);
+  --gradient-hero: radial-gradient(ellipse at top, oklch(0.35 0.2 305 / 40%), transparent 60%), linear-gradient(180deg, oklch(0.13 0.05 290), oklch(0.09 0.04 285));
+  --shadow-glow: 0 0 40px oklch(0.68 0.22 305 / 40%);
+  --shadow-elegant: 0 20px 60px -20px oklch(0.42 0.2 305 / 40%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --sidebar: oklch(0.15 0.06 288);
+  --sidebar-foreground: oklch(0.96 0.02 300);
+  --sidebar-primary: oklch(0.68 0.22 305);
+  --sidebar-primary-foreground: oklch(0.1 0.05 290);
+  --sidebar-accent: oklch(0.22 0.08 285);
+  --sidebar-accent-foreground: oklch(0.96 0.02 300);
+  --sidebar-border: oklch(0.28 0.08 290 / 60%);
+  --sidebar-ring: oklch(0.68 0.22 305);
 }
 
 .dark {
@@ -140,5 +147,23 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   }
+  h1, h2, h3, h4 {
+    font-family: "Cinzel", "Trajan Pro", Georgia, serif;
+    letter-spacing: 0.02em;
+  }
+}
+
+@utility bg-mystic {
+  background: var(--gradient-mystic);
+}
+@utility bg-hero {
+  background: var(--gradient-hero);
+}
+@utility text-glow {
+  text-shadow: 0 0 20px oklch(0.75 0.25 305 / 70%), 0 0 40px oklch(0.55 0.25 300 / 40%);
+}
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
 }
