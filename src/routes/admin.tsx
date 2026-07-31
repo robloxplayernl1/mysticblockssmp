@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, type SiteSettings, type StaffRow, type RankRow } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
 import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
 import {
   updateSettings,
@@ -15,6 +15,9 @@ import {
   createRank,
   updateRank,
   deleteRank,
+  createChangelog,
+  updateChangelog,
+  deleteChangelog,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -96,12 +99,13 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks" | "changelog">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
     { id: "staff" as const, label: "Staff" },
     { id: "ranks" as const, label: "Ranks" },
+    { id: "changelog" as const, label: "Changelog" },
   ];
 
   return (
@@ -134,6 +138,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "events" && <EventsPanel />}
       {tab === "staff" && <StaffPanel />}
       {tab === "ranks" && <RanksPanel />}
+      {tab === "changelog" && <ChangelogPanel />}
     </div>
   );
 }
@@ -188,6 +193,20 @@ function SettingsPanel() {
       <Field label="Regels tekst">
         <textarea rows={8} className={inputCls} value={current.rules_text} onChange={(e) => set({ rules_text: e.target.value })} />
       </Field>
+      <div className="p-4 rounded-xl border border-border bg-background/40 space-y-3">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="w-4 h-4 accent-primary"
+            checked={current.maintenance_enabled}
+            onChange={(e) => set({ maintenance_enabled: e.target.checked })}
+          />
+          <span className="text-sm font-medium">🛠️ Onderhoudsmodus (site tonen als onderhoud, admin blijft bereikbaar)</span>
+        </label>
+        <Field label="Onderhoudstekst">
+          <textarea rows={3} className={inputCls} value={current.maintenance_text} onChange={(e) => set({ maintenance_text: e.target.value })} />
+        </Field>
+      </div>
       <div className="flex items-center gap-3">
         <button
           className={btnCls}

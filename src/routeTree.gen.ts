@@ -13,6 +13,7 @@ import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiStatusRouteImport } from './routes/api/status'
@@ -37,6 +38,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChangelogRoute = ChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -56,6 +62,7 @@ const ApiStatusRoute = ApiStatusRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/changelog': typeof ChangelogRoute
   '/events': typeof EventsRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/changelog': typeof ChangelogRoute
   '/events': typeof EventsRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/changelog': typeof ChangelogRoute
   '/events': typeof EventsRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/changelog'
     | '/events'
     | '/ranks'
     | '/rules'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/changelog'
     | '/events'
     | '/ranks'
     | '/rules'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/changelog'
     | '/events'
     | '/ranks'
     | '/rules'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  ChangelogRoute: typeof ChangelogRoute
   EventsRoute: typeof EventsRoute
   RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/changelog': {
+      id: '/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  ChangelogRoute: ChangelogRoute,
   EventsRoute: EventsRoute,
   RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
