@@ -8,6 +8,15 @@ export type SiteSettings = {
   discord_link: string;
   announcement: string;
   rules_text: string;
+  maintenance_enabled: boolean;
+  maintenance_text: string;
+};
+
+export type ChangelogRow = {
+  id: string;
+  title: string;
+  body: string;
+  entry_date: string;
 };
 
 export type EventRow = {
@@ -40,7 +49,7 @@ export const settingsQuery = queryOptions({
   queryFn: async (): Promise<SiteSettings> => {
     const { data, error } = await supabase
       .from("site_settings")
-      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text")
+      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, maintenance_enabled, maintenance_text")
       .eq("id", "main")
       .maybeSingle();
     if (error) throw error;
@@ -52,8 +61,22 @@ export const settingsQuery = queryOptions({
         discord_link: "https://discord.gg/Y4BchzeFJH",
         announcement: "",
         rules_text: "",
+        maintenance_enabled: false,
+        maintenance_text: "",
       }
     );
+  },
+});
+
+export const changelogQuery = queryOptions({
+  queryKey: ["changelog"],
+  queryFn: async (): Promise<ChangelogRow[]> => {
+    const { data, error } = await supabase
+      .from("changelog" as never)
+      .select("id, title, body, entry_date")
+      .order("entry_date", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as unknown as ChangelogRow[];
   },
 });
 
