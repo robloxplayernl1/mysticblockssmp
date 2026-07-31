@@ -9,10 +9,28 @@ const nav = [
   { to: "/ranks", label: "Ranks" },
   { to: "/rules", label: "Regels" },
   { to: "/staff", label: "Staff" },
+  { to: "/changelog", label: "Changelog" },
 ];
 
-export function SiteLayout({ children }: { children: ReactNode }) {
+export function SiteLayout({ children, bypassMaintenance }: { children: ReactNode; bypassMaintenance?: boolean }) {
   const { data: settings } = useQuery(settingsQuery);
+
+  if (settings?.maintenance_enabled && !bypassMaintenance) {
+    return (
+      <div className="min-h-screen bg-hero text-foreground flex items-center justify-center px-6">
+        <div className="max-w-lg text-center p-10 rounded-2xl bg-card/80 border border-border shadow-elegant backdrop-blur">
+          <div className="text-5xl mb-4">🛠️</div>
+          <h1 className="text-3xl font-bold text-glow mb-4">Onderhoud</h1>
+          <p className="text-muted-foreground whitespace-pre-wrap">
+            {settings.maintenance_text || "We zijn even bezig met onderhoud. Kom later terug!"}
+          </p>
+          <Link to="/admin" className="mt-8 inline-block text-xs text-muted-foreground/60 hover:text-primary">
+            Admin
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-hero text-foreground">
