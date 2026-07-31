@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, type SiteSettings, type StaffRow, type RankRow } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
 import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
 import {
   updateSettings,
@@ -15,6 +15,9 @@ import {
   createRank,
   updateRank,
   deleteRank,
+  createChangelog,
+  updateChangelog,
+  deleteChangelog,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -40,7 +43,7 @@ function AdminPage() {
   });
 
   return (
-    <SiteLayout>
+    <SiteLayout bypassMaintenance>
       <div className="max-w-5xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-glow mb-8 text-center">Admin Panel</h1>
         {status?.admin ? (
@@ -96,12 +99,13 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks" | "changelog">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
     { id: "staff" as const, label: "Staff" },
     { id: "ranks" as const, label: "Ranks" },
+    { id: "changelog" as const, label: "Changelog" },
   ];
 
   return (
@@ -134,6 +138,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "events" && <EventsPanel />}
       {tab === "staff" && <StaffPanel />}
       {tab === "ranks" && <RanksPanel />}
+      {tab === "changelog" && <ChangelogPanel />}
     </div>
   );
 }
@@ -188,6 +193,20 @@ function SettingsPanel() {
       <Field label="Regels tekst">
         <textarea rows={8} className={inputCls} value={current.rules_text} onChange={(e) => set({ rules_text: e.target.value })} />
       </Field>
+      <div className="p-4 rounded-xl border border-border bg-background/40 space-y-3">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="w-4 h-4 accent-primary"
+            checked={current.maintenance_enabled}
+            onChange={(e) => set({ maintenance_enabled: e.target.checked })}
+          />
+          <span className="text-sm font-medium">🛠️ Onderhoudsmodus (site tonen als onderhoud, admin blijft bereikbaar)</span>
+        </label>
+        <Field label="Onderhoudstekst">
+          <textarea rows={3} className={inputCls} value={current.maintenance_text} onChange={(e) => set({ maintenance_text: e.target.value })} />
+        </Field>
+      </div>
       <div className="flex items-center gap-3">
         <button
           className={btnCls}
@@ -363,6 +382,105 @@ function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Pro
 }
 
 function RanksPanel() {
+  return <RanksPanelInner />;
+}
+
+function ChangelogPanel() {
+  const qc = useQueryClient();
+  const { data: entries } = useQuery(changelogQuery);
+  const createFn = useServerFn(createChangelog);
+  const delFn = useServerFn(deleteChangelog);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [date, setDate] = useState("");
+
+  return (
+    <Panel title="Changelog beheren">
+      <div className="grid md:grid-cols-2 gap-3">
+        <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
+        <Field label="Datum"><input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <div className="md:col-span-2">
+          <Field label="Beschrijving"><textarea rows={4} className={inputCls} value={body} onChange={(e) => setBody(e.target.value)} /></Field>
+        </div>
+      </div>
+      <button
+        className={btnCls}
+        onClick={async () => {
+          if (!title) return;
+          const iso = date ? new Date(date).toISOString() : new Date().toISOString();
+          await createFn({ data: { title, body, entry_date: iso } });
+          setTitle(""); setBody(""); setDate("");
+          await qc.invalidateQueries({ queryKey: ["changelog"] });
+        }}
+      >
+        Update toevoegen
+      </button>
+      <div className="space-y-2 pt-4">
+        {entries?.map((c) => (
+          <ChangelogRowEditor key={c.id} row={c} onDelete={async () => {
+            await delFn({ data: { id: c.id } });
+            await qc.invalidateQueries({ queryKey: ["changelog"] });
+          }} />
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function ChangelogRowEditor({ row, onDelete }: { row: ChangelogRow; onDelete: () => void | Promise<void> }) {
+  const qc = useQueryClient();
+  const updateFn = useServerFn(updateChangelog);
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(row.title);
+  const [body, setBody] = useState(row.body);
+  const [date, setDate] = useState(row.entry_date.slice(0, 10));
+  const [saving, setSaving] = useState(false);
+
+  if (editing) {
+    return (
+      <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
+        <div className="grid md:grid-cols-2 gap-2">
+          <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} />
+          <input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} />
+        </div>
+        <textarea rows={4} className={inputCls} value={body} onChange={(e) => setBody(e.target.value)} />
+        <div className="flex gap-2">
+          <button
+            className={btnCls}
+            disabled={saving}
+            onClick={async () => {
+              setSaving(true);
+              try {
+                await updateFn({ data: { id: row.id, title, body, entry_date: new Date(date).toISOString() } });
+                await qc.invalidateQueries({ queryKey: ["changelog"] });
+                setEditing(false);
+              } finally { setSaving(false); }
+            }}
+          >Opslaan</button>
+          <button className="text-sm px-3 py-2 rounded-md border border-border hover:bg-secondary transition" onClick={() => {
+            setTitle(row.title); setBody(row.body); setDate(row.entry_date.slice(0, 10)); setEditing(false);
+          }}>Annuleren</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-start justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
+      <div className="min-w-0">
+        <p className="text-xs text-primary font-mono">{new Date(row.entry_date).toLocaleDateString("nl-NL", { dateStyle: "long" })}</p>
+        <p className="font-medium">{row.title}</p>
+        <p className="text-sm text-muted-foreground whitespace-pre-wrap">{row.body}</p>
+      </div>
+      <div className="flex gap-3 shrink-0">
+        <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
+        <button className="text-sm text-destructive hover:underline" onClick={onDelete}>Verwijder</button>
+      </div>
+    </div>
+  );
+}
+
+function RanksPanelInner() {
   const qc = useQueryClient();
   const { data: ranks } = useQuery(ranksQuery);
   const createFn = useServerFn(createRank);

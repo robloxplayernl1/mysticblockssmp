@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      changelog: {
+        Row: {
+          body: string
+          created_at: string
+          entry_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string
@@ -75,6 +99,8 @@ export type Database = {
           hero_subtitle: string
           hero_title: string
           id: string
+          maintenance_enabled: boolean
+          maintenance_text: string
           rules_text: string
           server_ip: string
           updated_at: string
@@ -85,6 +111,8 @@ export type Database = {
           hero_subtitle?: string
           hero_title?: string
           id?: string
+          maintenance_enabled?: boolean
+          maintenance_text?: string
           rules_text?: string
           server_ip?: string
           updated_at?: string
@@ -95,6 +123,8 @@ export type Database = {
           hero_subtitle?: string
           hero_title?: string
           id?: string
+          maintenance_enabled?: boolean
+          maintenance_text?: string
           rules_text?: string
           server_ip?: string
           updated_at?: string
