@@ -43,7 +43,7 @@ function AdminPage() {
   });
 
   return (
-    <SiteLayout>
+    <SiteLayout bypassMaintenance>
       <div className="max-w-5xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-glow mb-8 text-center">Admin Panel</h1>
         {status?.admin ? (
