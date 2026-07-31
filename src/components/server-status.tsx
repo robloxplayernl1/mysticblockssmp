@@ -25,9 +25,10 @@ export function ServerStatus() {
       </div>
     );
   }
+  const online = data.java.online && data.java.players.max > 0;
   return (
     <div className="flex justify-center">
-      <Badge label="Server" online={data.java.online} players={data.java.players} />
+      <Badge label="Server" online={online} players={data.java.players} />
     </div>
   );
 }
