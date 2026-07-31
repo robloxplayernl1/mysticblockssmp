@@ -15,6 +15,8 @@ const settingsSchema = z.object({
   discord_link: z.string().trim().url().max(300),
   announcement: z.string().trim().max(300),
   rules_text: z.string().trim().max(5000),
+  maintenance_enabled: z.boolean().default(false),
+  maintenance_text: z.string().trim().max(1000),
 });
 
 export const updateSettings = createServerFn({ method: "POST" })
@@ -141,6 +143,46 @@ export const deleteRank = createServerFn({ method: "POST" })
     await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
     const { error } = await db.from("ranks" as never).delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+// ---------- Changelog ----------
+const changelogSchema = z.object({
+  title: z.string().trim().min(1).max(120),
+  body: z.string().trim().max(3000),
+  entry_date: z.string().min(1),
+});
+
+export const createChangelog = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof changelogSchema>) => changelogSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("changelog" as never).insert(data as never);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+const changelogUpdateSchema = changelogSchema.extend({ id: z.string().uuid() });
+
+export const updateChangelog = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof changelogUpdateSchema>) => changelogUpdateSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { id, ...rest } = data;
+    const { error } = await db.from("changelog" as never).update(rest as never).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteChangelog = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("changelog" as never).delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
