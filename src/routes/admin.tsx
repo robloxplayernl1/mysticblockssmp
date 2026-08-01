@@ -197,7 +197,7 @@ function SettingsPanel() {
         <textarea
           rows={7}
           className={inputCls}
-          value={current.opening_hours}
+          value={current.opening_hours ?? ""}
           onChange={(e) => set({ opening_hours: e.target.value })}
         />
       </Field>
