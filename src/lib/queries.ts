@@ -8,6 +8,7 @@ export type SiteSettings = {
   discord_link: string;
   announcement: string;
   rules_text: string;
+  opening_hours: string;
   maintenance_enabled: boolean;
   maintenance_text: string;
 };
@@ -49,7 +50,7 @@ export const settingsQuery = queryOptions({
   queryFn: async (): Promise<SiteSettings> => {
     const { data, error } = await supabase
       .from("site_settings")
-      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, maintenance_enabled, maintenance_text")
+      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, opening_hours, maintenance_enabled, maintenance_text")
       .eq("id", "main")
       .maybeSingle();
     if (error) throw error;
@@ -61,6 +62,7 @@ export const settingsQuery = queryOptions({
         discord_link: "https://discord.gg/Y4BchzeFJH",
         announcement: "",
         rules_text: "",
+        opening_hours: "",
         maintenance_enabled: false,
         maintenance_text: "",
       }
