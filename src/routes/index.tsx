@@ -143,6 +143,27 @@ function Index() {
         </div>
       </section>
 
+      {openingLines.length > 0 && (
+        <section className="max-w-3xl mx-auto px-6 py-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🕕 Openingstijden</h2>
+          <p className="text-center text-sm text-muted-foreground mb-8">
+            De server is alleen online tijdens deze tijden.
+          </p>
+          <div className="rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
+            {openingLines.map((line, i) => {
+              const [day, ...rest] = line.split(/:(.+)/);
+              const time = rest.join("").trim();
+              return (
+                <div key={i} className="flex items-center justify-between px-6 py-3 text-sm">
+                  <span className="font-medium">{day.trim()}</span>
+                  <span className="font-mono text-primary">{time || "—"}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {upcoming.length > 0 && (
         <section className="max-w-5xl mx-auto px-6 py-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Aankomende evenementen</h2>
