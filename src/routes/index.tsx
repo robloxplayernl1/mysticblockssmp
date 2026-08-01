@@ -31,6 +31,10 @@ function Index() {
   const upcoming = (events ?? [])
     .filter((e) => new Date(e.event_date).getTime() > Date.now() - 24 * 60 * 60 * 1000)
     .slice(0, 3);
+  const openingLines = (settings?.opening_hours ?? "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
 
   const copy = (val: string, key: string) => {
     navigator.clipboard.writeText(val);
