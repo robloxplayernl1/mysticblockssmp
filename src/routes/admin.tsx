@@ -193,6 +193,14 @@ function SettingsPanel() {
       <Field label="Regels tekst">
         <textarea rows={8} className={inputCls} value={current.rules_text} onChange={(e) => set({ rules_text: e.target.value })} />
       </Field>
+      <Field label="Openingstijden (één regel per dag)">
+        <textarea
+          rows={7}
+          className={inputCls}
+          value={current.opening_hours}
+          onChange={(e) => set({ opening_hours: e.target.value })}
+        />
+      </Field>
       <div className="p-4 rounded-xl border border-border bg-background/40 space-y-3">
         <label className="flex items-center gap-3 cursor-pointer">
           <input

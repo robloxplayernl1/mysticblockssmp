@@ -101,6 +101,7 @@ export type Database = {
           id: string
           maintenance_enabled: boolean
           maintenance_text: string
+          opening_hours: string
           rules_text: string
           server_ip: string
           updated_at: string
@@ -113,6 +114,7 @@ export type Database = {
           id?: string
           maintenance_enabled?: boolean
           maintenance_text?: string
+          opening_hours?: string
           rules_text?: string
           server_ip?: string
           updated_at?: string
@@ -125,6 +127,7 @@ export type Database = {
           id?: string
           maintenance_enabled?: boolean
           maintenance_text?: string
+          opening_hours?: string
           rules_text?: string
           server_ip?: string
           updated_at?: string
