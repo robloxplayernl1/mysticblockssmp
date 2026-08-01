@@ -15,6 +15,7 @@ const settingsSchema = z.object({
   discord_link: z.string().trim().url().max(300),
   announcement: z.string().trim().max(300),
   rules_text: z.string().trim().max(5000),
+  opening_hours: z.string().trim().max(2000).default(""),
   maintenance_enabled: z.boolean().default(false),
   maintenance_text: z.string().trim().max(1000),
 });
