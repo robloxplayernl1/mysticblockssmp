@@ -29,7 +29,7 @@ export const updateSettings = createServerFn({ method: "POST" })
     const db = await admin();
     const { error } = await db
       .from("site_settings")
-      .update({ ...data, updated_at: new Date().toISOString() })
+      .update({ ...data, updated_at: new Date().toISOString() } as never)
       .eq("id", "main");
     if (error) throw new Error(error.message);
     return { ok: true as const };
