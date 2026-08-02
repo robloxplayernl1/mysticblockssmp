@@ -24,10 +24,10 @@ function RanksPage() {
 
   return (
     <SiteLayout>
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-glow mb-4">Ranks</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-glow mb-4">Ranks</h1>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
             Ranks verdien je puur door te spelen op de server. Geen webshop, geen betaalde
             voordelen — hoe meer speeltijd je hebt, hoe hoger je klimt.
           </p>
@@ -35,19 +35,19 @@ function RanksPage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {(ranks ?? []).map((r) => (
-            <div
+      <div
               key={r.id}
-              className="relative p-6 rounded-2xl bg-card border border-border overflow-hidden"
+              className="relative p-5 sm:p-6 rounded-2xl bg-card border border-border overflow-hidden"
             >
               <div
                 className="absolute inset-y-0 left-0 w-1"
                 style={{ backgroundColor: r.color }}
               />
-              <div className="flex items-baseline justify-between gap-3 mb-2">
-                <h2 className="text-2xl font-bold" style={{ color: r.color }}>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 mb-2">
+                <h2 className="min-w-0 break-words text-xl sm:text-2xl font-bold" style={{ color: r.color }}>
                   {r.name}
                 </h2>
-                <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                <span className="text-[11px] sm:text-xs uppercase tracking-wider text-muted-foreground text-right">
                   {r.requirement || "—"}
                 </span>
               </div>
