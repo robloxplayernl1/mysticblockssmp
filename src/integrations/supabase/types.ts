@@ -100,8 +100,10 @@ export type Database = {
           hero_title: string
           id: string
           maintenance_enabled: boolean
+          maintenance_pages: string[]
           maintenance_text: string
           opening_hours: string
+          opening_hours_enabled: boolean
           rules_text: string
           server_ip: string
           updated_at: string
@@ -113,8 +115,10 @@ export type Database = {
           hero_title?: string
           id?: string
           maintenance_enabled?: boolean
+          maintenance_pages?: string[]
           maintenance_text?: string
           opening_hours?: string
+          opening_hours_enabled?: boolean
           rules_text?: string
           server_ip?: string
           updated_at?: string
@@ -126,8 +130,10 @@ export type Database = {
           hero_title?: string
           id?: string
           maintenance_enabled?: boolean
+          maintenance_pages?: string[]
           maintenance_text?: string
           opening_hours?: string
+          opening_hours_enabled?: boolean
           rules_text?: string
           server_ip?: string
           updated_at?: string
