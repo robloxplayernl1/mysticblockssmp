@@ -11,6 +11,8 @@ export type SiteSettings = {
   opening_hours: string;
   maintenance_enabled: boolean;
   maintenance_text: string;
+  maintenance_pages: string[];
+  opening_hours_enabled: boolean;
 };
 
 export type ChangelogRow = {
@@ -50,12 +52,12 @@ export const settingsQuery = queryOptions({
   queryFn: async (): Promise<SiteSettings> => {
     const { data, error } = await supabase
       .from("site_settings")
-      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, opening_hours, maintenance_enabled, maintenance_text")
+      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, opening_hours, maintenance_enabled, maintenance_text, maintenance_pages, opening_hours_enabled")
       .eq("id", "main")
       .maybeSingle();
     if (error) throw error;
     return (
-      (data as SiteSettings) ?? {
+      (data as unknown as SiteSettings) ?? {
         hero_title: "MysticBlocksSMP",
         hero_subtitle: "",
         server_ip: "mysticblockssmp.mcsh.io",
@@ -65,6 +67,8 @@ export const settingsQuery = queryOptions({
         opening_hours: "",
         maintenance_enabled: false,
         maintenance_text: "",
+        maintenance_pages: [],
+        opening_hours_enabled: true,
       }
     );
   },

@@ -18,6 +18,8 @@ const settingsSchema = z.object({
   opening_hours: z.string().trim().max(2000).default(""),
   maintenance_enabled: z.boolean().default(false),
   maintenance_text: z.string().trim().max(1000),
+  maintenance_pages: z.array(z.string().trim().max(60)).max(20).default([]),
+  opening_hours_enabled: z.boolean().default(true),
 });
 
 export const updateSettings = createServerFn({ method: "POST" })
