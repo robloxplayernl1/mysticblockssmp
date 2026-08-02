@@ -31,7 +31,7 @@ function Index() {
   const upcoming = (events ?? [])
     .filter((e) => new Date(e.event_date).getTime() > Date.now() - 24 * 60 * 60 * 1000)
     .slice(0, 3);
-  const openingLines = (settings?.opening_hours ?? "")
+  const openingLines = (settings?.opening_hours_enabled === false ? "" : settings?.opening_hours ?? "")
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);

@@ -193,6 +193,15 @@ function SettingsPanel() {
       <Field label="Regels tekst">
         <textarea rows={8} className={inputCls} value={current.rules_text} onChange={(e) => set({ rules_text: e.target.value })} />
       </Field>
+      <label className="flex items-center gap-3 cursor-pointer">
+        <input
+          type="checkbox"
+          className="w-4 h-4 accent-primary"
+          checked={current.opening_hours_enabled ?? true}
+          onChange={(e) => set({ opening_hours_enabled: e.target.checked })}
+        />
+        <span className="text-sm font-medium">🕕 Openingstijden tonen op de homepage</span>
+      </label>
       <Field label="Openingstijden (één regel per dag)">
         <textarea
           rows={7}
@@ -214,6 +223,32 @@ function SettingsPanel() {
         <Field label="Onderhoudstekst">
           <textarea rows={3} className={inputCls} value={current.maintenance_text} onChange={(e) => set({ maintenance_text: e.target.value })} />
         </Field>
+        <div>
+          <span className="text-xs uppercase text-muted-foreground">Pagina's in onderhoud</span>
+          <div className="mt-2 grid sm:grid-cols-2 gap-2">
+            {PAGES.map((p) => {
+              const list = current.maintenance_pages ?? [];
+              const checked = list.includes(p.path);
+              return (
+                <label key={p.path} className="flex items-center gap-2 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 accent-primary"
+                    checked={checked}
+                    onChange={(e) =>
+                      set({
+                        maintenance_pages: e.target.checked
+                          ? [...list, p.path]
+                          : list.filter((x) => x !== p.path),
+                      })
+                    }
+                  />
+                  <span>{p.label}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <button
