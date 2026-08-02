@@ -22,9 +22,9 @@ function ChangelogPage() {
 
   return (
     <SiteLayout>
-      <div className="max-w-3xl mx-auto px-6 py-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-glow text-center mb-4">Changelog</h1>
-        <p className="text-center text-muted-foreground mb-12">Alle updates van de server en website.</p>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-glow text-center mb-4">Changelog</h1>
+        <p className="text-center text-sm sm:text-base text-muted-foreground mb-8 sm:mb-12">Alle updates van de server en website.</p>
 
         {isLoading && <p className="text-center text-muted-foreground">Laden...</p>}
         {!isLoading && (data?.length ?? 0) === 0 && (
@@ -33,13 +33,13 @@ function ChangelogPage() {
 
         <div className="relative space-y-6">
           {data?.map((c) => (
-            <article key={c.id} className="relative pl-6 border-l-2 border-primary/40">
+            <article key={c.id} className="relative pl-4 sm:pl-6 border-l-2 border-primary/40">
               <span className="absolute -left-[7px] top-2 w-3 h-3 rounded-full bg-primary shadow-glow" />
               <p className="text-xs font-mono text-primary mb-1">
                 {new Date(c.entry_date).toLocaleDateString("nl-NL", { dateStyle: "long" })}
               </p>
-              <h2 className="text-lg font-semibold mb-2">{c.title}</h2>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{c.body}</p>
+              <h2 className="text-base sm:text-lg font-semibold mb-2 break-words">{c.title}</h2>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{c.body}</p>
             </article>
           ))}
         </div>
