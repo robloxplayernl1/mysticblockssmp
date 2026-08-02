@@ -40,14 +40,14 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
         </div>
       )}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 border-b border-border">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="text-2xl">🔮</span>
-            <span className="font-semibold tracking-wide text-lg text-glow group-hover:text-primary transition-colors">
+        <div className="max-w-6xl mx-auto grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 py-3 sm:py-4">
+          <Link to="/" className="flex min-w-0 items-center gap-2 group">
+            <span className="shrink-0 text-xl sm:text-2xl">🔮</span>
+            <span className="truncate font-semibold tracking-wide text-base sm:text-lg text-glow group-hover:text-primary transition-colors">
               MysticBlocks<span className="text-primary">SMP</span>
             </span>
           </Link>
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 justify-self-end">
             {nav.map((n) => (
               <Link
                 key={n.to}
@@ -63,12 +63,12 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
             href={settings?.discord_link ?? "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition shadow-glow"
+            className="inline-flex shrink-0 items-center gap-2 rounded-md bg-primary px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-primary-foreground hover:opacity-90 transition shadow-glow"
           >
             Discord
           </a>
         </div>
-        <nav className="md:hidden flex overflow-x-auto gap-1 px-4 pb-2 border-t border-border/50">
+        <nav className="md:hidden flex overflow-x-auto gap-1 px-3 pb-2 pt-1 border-t border-border/50 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {nav.map((n) => (
             <Link
               key={n.to}
