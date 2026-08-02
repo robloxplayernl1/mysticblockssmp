@@ -48,24 +48,24 @@ function Index() {
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/20 blur-3xl" />
         </div>
-        <div className="relative max-w-5xl mx-auto text-center px-6 pt-24 pb-32">
+        <div className="relative max-w-5xl mx-auto text-center px-4 sm:px-6 pt-14 pb-20 sm:pt-24 sm:pb-32">
           <div className="mb-6 flex justify-center">
             <ServerStatus />
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-glow mb-6">
+          <h1 className="text-[2rem] leading-tight break-words sm:text-5xl md:text-7xl font-bold tracking-tight text-glow mb-6">
             {settings?.hero_title ?? "MysticBlocksSMP"}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10">
             {settings?.hero_subtitle ?? "Een magische Minecraft SMP wereld vol avontuur"}
           </p>
-          <div className="inline-flex flex-col sm:flex-row items-stretch gap-2 bg-card/70 border border-border rounded-xl p-2 shadow-elegant backdrop-blur">
-            <div className="px-5 py-3 text-left">
+          <div className="flex w-full max-w-md mx-auto flex-col sm:inline-flex sm:w-auto sm:flex-row items-stretch gap-2 bg-card/70 border border-border rounded-xl p-2 shadow-elegant backdrop-blur">
+            <div className="min-w-0 px-4 sm:px-5 py-3 text-left">
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Server IP</p>
-              <p className="text-lg font-mono text-primary">{ip}</p>
+              <p className="text-sm sm:text-lg font-mono text-primary break-all">{ip}</p>
             </div>
             <button
               onClick={() => copy(ip, "ip")}
-              className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-glow"
+              className="shrink-0 px-5 sm:px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-glow"
             >
               {copied === "ip" ? "Gekopieerd ✓" : "Kopieer IP"}
             </button>
@@ -86,10 +86,10 @@ function Index() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Hoe join je?</h2>
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">Hoe join je?</h2>
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🖥️</span>
               <h3 className="font-semibold text-lg">Java Edition</h3>
@@ -100,13 +100,13 @@ function Index() {
               <li>Plak het IP hieronder en join</li>
             </ol>
             <div className="flex items-center justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border">
-              <span className="font-mono text-sm text-primary truncate">{ip}</span>
-              <button onClick={() => copy(ip, "java")} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
+              <span className="min-w-0 font-mono text-xs sm:text-sm text-primary truncate">{ip}</span>
+              <button onClick={() => copy(ip, "java")} className="shrink-0 text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
                 {copied === "java" ? "✓" : "Kopieer"}
               </button>
             </div>
           </div>
-          <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">📱</span>
               <h3 className="font-semibold text-lg">Bedrock Edition</h3>
@@ -120,18 +120,18 @@ function Index() {
               <div className="flex items-center justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border">
                 <div className="min-w-0">
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Adres</p>
-                  <p className="font-mono text-sm text-primary truncate">{ip}</p>
+                  <p className="font-mono text-xs sm:text-sm text-primary truncate">{ip}</p>
                 </div>
-                <button onClick={() => copy(ip, "be-ip")} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
+                <button onClick={() => copy(ip, "be-ip")} className="shrink-0 text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
                   {copied === "be-ip" ? "✓" : "Kopieer"}
                 </button>
               </div>
               <div className="flex items-center justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border">
                 <div className="min-w-0">
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Poort</p>
-                  <p className="font-mono text-sm text-primary">{bedrockPort}</p>
+                  <p className="font-mono text-xs sm:text-sm text-primary">{bedrockPort}</p>
                 </div>
-                <button onClick={() => copy(bedrockPort, "be-port")} className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
+                <button onClick={() => copy(bedrockPort, "be-port")} className="shrink-0 text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition">
                   {copied === "be-port" ? "✓" : "Kopieer"}
                 </button>
               </div>
@@ -139,8 +139,8 @@ function Index() {
           </div>
         </div>
 
-        <div className="mt-8 p-6 rounded-2xl border border-primary/30 bg-primary/5 text-center">
-          <h3 className="font-semibold text-lg mb-1">✨ Ranks verdien je door te spelen</h3>
+        <div className="mt-8 p-5 sm:p-6 rounded-2xl border border-primary/30 bg-primary/5 text-center">
+          <h3 className="font-semibold text-base sm:text-lg mb-1">✨ Ranks verdien je door te spelen</h3>
           <p className="text-sm text-muted-foreground">
             Geen webshop — hoe meer speeltijd je hebt, hoe hoger je rank. Simpel en eerlijk.
           </p>
@@ -148,8 +148,8 @@ function Index() {
       </section>
 
       {openingLines.length > 0 && (
-        <section className="max-w-3xl mx-auto px-6 py-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🕕 Openingstijden</h2>
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">🕕 Openingstijden</h2>
           <p className="text-center text-sm text-muted-foreground mb-8">
             De server is alleen online tijdens deze tijden.
           </p>
@@ -158,7 +158,7 @@ function Index() {
               const [day, ...rest] = line.split(/:(.+)/);
               const time = rest.join("").trim();
               return (
-                <div key={i} className="flex items-center justify-between px-6 py-3 text-sm">
+                <div key={i} className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 text-sm">
                   <span className="font-medium">{day.trim()}</span>
                   <span className="font-mono text-primary">{time || "—"}</span>
                 </div>
@@ -169,15 +169,15 @@ function Index() {
       )}
 
       {upcoming.length > 0 && (
-        <section className="max-w-5xl mx-auto px-6 py-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Aankomende evenementen</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">Aankomende evenementen</h2>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             {upcoming.map((e) => (
-              <div key={e.id} className="p-6 rounded-2xl bg-card border border-border">
+              <div key={e.id} className="p-5 sm:p-6 rounded-2xl bg-card border border-border">
                 <p className="text-xs text-primary font-mono mb-2">
                   {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}
                 </p>
-                <h3 className="font-semibold text-lg mb-2">{e.title}</h3>
+                <h3 className="font-semibold text-base sm:text-lg mb-2 break-words">{e.title}</h3>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{e.description}</p>
               </div>
             ))}
