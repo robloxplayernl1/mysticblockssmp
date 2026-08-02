@@ -32,6 +32,14 @@ export const Route = createFileRoute("/admin")({
 });
 
 const inputCls = "w-full rounded-lg bg-input border border-border px-3 py-2";
+const PAGES = [
+  { path: "/", label: "Home" },
+  { path: "/events", label: "Events" },
+  { path: "/ranks", label: "Ranks" },
+  { path: "/rules", label: "Regels" },
+  { path: "/staff", label: "Staff" },
+  { path: "/changelog", label: "Changelog" },
+];
 const btnCls =
   "rounded-lg bg-primary text-primary-foreground px-4 py-2 font-medium hover:opacity-90 transition disabled:opacity-50";
 
