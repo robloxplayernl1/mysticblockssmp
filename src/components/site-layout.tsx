@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { settingsQuery } from "@/lib/queries";
 import type { ReactNode } from "react";
@@ -14,15 +14,18 @@ const nav = [
 
 export function SiteLayout({ children, bypassMaintenance }: { children: ReactNode; bypassMaintenance?: boolean }) {
   const { data: settings } = useQuery(settingsQuery);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const normalized = pathname !== "/" && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  const pageInMaintenance = (settings?.maintenance_pages ?? []).includes(normalized);
 
-  if (settings?.maintenance_enabled && !bypassMaintenance) {
+  if ((settings?.maintenance_enabled || pageInMaintenance) && !bypassMaintenance) {
     return (
       <div className="min-h-screen bg-hero text-foreground flex items-center justify-center px-6">
         <div className="max-w-lg text-center p-10 rounded-2xl bg-card/80 border border-border shadow-elegant backdrop-blur">
           <div className="text-5xl mb-4">🛠️</div>
           <h1 className="text-3xl font-bold text-glow mb-4">Onderhoud</h1>
           <p className="text-muted-foreground whitespace-pre-wrap">
-            {settings.maintenance_text || "We zijn even bezig met onderhoud. Kom later terug!"}
+            {settings?.maintenance_text || "We zijn even bezig met onderhoud. Kom later terug!"}
           </p>
           <Link to="/admin" className="mt-8 inline-block text-xs text-muted-foreground/60 hover:text-primary">
             Admin

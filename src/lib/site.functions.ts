@@ -18,6 +18,8 @@ const settingsSchema = z.object({
   opening_hours: z.string().trim().max(2000).default(""),
   maintenance_enabled: z.boolean().default(false),
   maintenance_text: z.string().trim().max(1000),
+  maintenance_pages: z.array(z.string().trim().max(60)).max(20).default([]),
+  opening_hours_enabled: z.boolean().default(true),
 });
 
 export const updateSettings = createServerFn({ method: "POST" })
@@ -27,7 +29,7 @@ export const updateSettings = createServerFn({ method: "POST" })
     const db = await admin();
     const { error } = await db
       .from("site_settings")
-      .update({ ...data, updated_at: new Date().toISOString() })
+      .update({ ...data, updated_at: new Date().toISOString() } as never)
       .eq("id", "main");
     if (error) throw new Error(error.message);
     return { ok: true as const };
