@@ -32,7 +32,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const inputCls = "w-full rounded-lg bg-input border border-border px-3 py-2";
+const inputCls = "w-full min-w-0 rounded-lg bg-input border border-border px-3 py-2 text-sm sm:text-base";
 const PAGES = [
   { path: "/", label: "Home" },
   { path: "/events", label: "Events" },
@@ -42,7 +42,7 @@ const PAGES = [
   { path: "/changelog", label: "Changelog" },
 ];
 const btnCls =
-  "rounded-lg bg-primary text-primary-foreground px-4 py-2 font-medium hover:opacity-90 transition disabled:opacity-50";
+  "rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm sm:text-base font-medium hover:opacity-90 transition disabled:opacity-50";
 
 function AdminPage() {
   const statusFn = useServerFn(adminStatus);
@@ -53,8 +53,8 @@ function AdminPage() {
 
   return (
     <SiteLayout bypassMaintenance>
-      <div className="max-w-5xl mx-auto px-6 py-16">
-        <h1 className="text-4xl font-bold text-glow mb-8 text-center">Admin Panel</h1>
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-8 sm:py-16">
+        <h1 className="text-2xl sm:text-4xl font-bold text-glow mb-6 sm:mb-8 text-center">Admin Panel</h1>
         {status?.admin ? (
           <AdminDashboard onLogout={() => refetch()} />
         ) : (
@@ -88,7 +88,7 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
   }
 
   return (
-    <form onSubmit={submit} className="max-w-sm mx-auto p-8 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
+    <form onSubmit={submit} className="max-w-sm mx-auto p-5 sm:p-8 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
       <h2 className="text-lg font-semibold text-center">Inloggen</h2>
       <div>
         <label className="text-xs uppercase text-muted-foreground">Gebruikersnaam</label>
@@ -119,13 +119,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-1 p-1 bg-card rounded-lg border border-border">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
+        <div className="flex gap-1 p-1 bg-card rounded-lg border border-border overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-4 py-2 rounded-md text-sm transition ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm whitespace-nowrap transition ${
                 tab === t.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -138,7 +138,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             await logoutFn();
             onLogout();
           }}
-          className="text-sm px-4 py-2 rounded-md border border-border hover:bg-secondary transition"
+          className="shrink-0 text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md border border-border hover:bg-secondary transition"
         >
           Uitloggen
         </button>
@@ -154,8 +154,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="p-6 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
-      <h2 className="text-xl font-semibold">{title}</h2>
+    <div className="p-4 sm:p-6 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
+      <h2 className="text-lg sm:text-xl font-semibold">{title}</h2>
       {children}
     </div>
   );
