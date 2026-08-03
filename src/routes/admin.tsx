@@ -579,9 +579,10 @@ function RanksPanelInner() {
   );
 }
 
-function RankRowEditor({ row, onDelete }: { row: RankRow; onDelete: () => void | Promise<void> }) {
+function RankRowEditor({ row, prevId, nextId, onDelete }: { row: RankRow; prevId?: string; nextId?: string; onDelete: () => void | Promise<void> }) {
   const qc = useQueryClient();
   const updateFn = useServerFn(updateRank);
+  const swapFn = useServerFn(swapRankOrder);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(row.name);
   const [requirement, setRequirement] = useState(row.requirement);
@@ -589,6 +590,12 @@ function RankRowEditor({ row, onDelete }: { row: RankRow; onDelete: () => void |
   const [color, setColor] = useState(row.color);
   const [sortOrder, setSortOrder] = useState(row.sort_order);
   const [saving, setSaving] = useState(false);
+
+  const swap = async (otherId?: string) => {
+    if (!otherId) return;
+    await swapFn({ data: { idA: row.id, idB: otherId } });
+    await qc.invalidateQueries({ queryKey: ["ranks"] });
+  };
 
   if (editing) {
     return (
@@ -634,7 +641,21 @@ function RankRowEditor({ row, onDelete }: { row: RankRow; onDelete: () => void |
           <p className="text-sm text-muted-foreground truncate">{row.description}</p>
         </div>
       </div>
-      <div className="flex gap-3 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-col">
+          <button
+            disabled={!prevId}
+            onClick={() => swap(prevId)}
+            className="px-2 py-0.5 text-xs rounded-t-md border border-border hover:bg-secondary disabled:opacity-30 disabled:hover:bg-transparent transition"
+            title="Omhoog"
+          >▲</button>
+          <button
+            disabled={!nextId}
+            onClick={() => swap(nextId)}
+            className="px-2 py-0.5 text-xs rounded-b-md border border-t-0 border-border hover:bg-secondary disabled:opacity-30 disabled:hover:bg-transparent transition"
+            title="Omlaag"
+          >▼</button>
+        </div>
         <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
         <button className="text-sm text-destructive hover:underline" onClick={onDelete}>Verwijder</button>
       </div>
