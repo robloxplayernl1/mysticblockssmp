@@ -168,6 +168,22 @@ function Index() {
         </section>
       )}
 
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8">💬 Onze Discord</h2>
+        <div className="flex justify-center">
+          <iframe
+            src="https://discord.com/widget?id=1511390409035743292&theme=dark"
+            title="MysticBlocksSMP Discord"
+            width="350"
+            height="500"
+            allowTransparency
+            frameBorder="0"
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+            className="w-full max-w-[350px] rounded-xl border border-border shadow-elegant"
+          />
+        </div>
+      </section>
+
       {upcoming.length > 0 && (
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">Aankomende evenementen</h2>
