@@ -562,11 +562,17 @@ function RanksPanelInner() {
         Rank toevoegen
       </button>
       <div className="space-y-2 pt-4">
-        {ranks?.map((r) => (
-          <RankRowEditor key={r.id} row={r} onDelete={async () => {
-            await delFn({ data: { id: r.id } });
-            await qc.invalidateQueries({ queryKey: ["ranks"] });
-          }} />
+        {ranks?.map((r, i) => (
+          <RankRowEditor
+            key={r.id}
+            row={r}
+            prevId={ranks[i - 1]?.id}
+            nextId={ranks[i + 1]?.id}
+            onDelete={async () => {
+              await delFn({ data: { id: r.id } });
+              await qc.invalidateQueries({ queryKey: ["ranks"] });
+            }}
+          />
         ))}
       </div>
     </Panel>
