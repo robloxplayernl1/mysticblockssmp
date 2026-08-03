@@ -43,7 +43,7 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
         </div>
       )}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 border-b border-border">
-        <div className="max-w-6xl mx-auto grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 py-3 sm:py-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 md:gap-4 px-4 sm:px-6 py-3 sm:py-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 group">
             <span className="shrink-0 text-xl sm:text-2xl">🔮</span>
             <span className="truncate font-semibold tracking-wide text-base sm:text-lg text-glow group-hover:text-primary transition-colors">
