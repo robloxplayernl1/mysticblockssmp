@@ -32,7 +32,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const inputCls = "w-full rounded-lg bg-input border border-border px-3 py-2";
+const inputCls = "w-full min-w-0 rounded-lg bg-input border border-border px-3 py-2 text-sm sm:text-base";
 const PAGES = [
   { path: "/", label: "Home" },
   { path: "/events", label: "Events" },
@@ -42,7 +42,7 @@ const PAGES = [
   { path: "/changelog", label: "Changelog" },
 ];
 const btnCls =
-  "rounded-lg bg-primary text-primary-foreground px-4 py-2 font-medium hover:opacity-90 transition disabled:opacity-50";
+  "rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm sm:text-base font-medium hover:opacity-90 transition disabled:opacity-50";
 
 function AdminPage() {
   const statusFn = useServerFn(adminStatus);
@@ -53,8 +53,8 @@ function AdminPage() {
 
   return (
     <SiteLayout bypassMaintenance>
-      <div className="max-w-5xl mx-auto px-6 py-16">
-        <h1 className="text-4xl font-bold text-glow mb-8 text-center">Admin Panel</h1>
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-8 sm:py-16">
+        <h1 className="text-2xl sm:text-4xl font-bold text-glow mb-6 sm:mb-8 text-center">Admin Panel</h1>
         {status?.admin ? (
           <AdminDashboard onLogout={() => refetch()} />
         ) : (
@@ -88,7 +88,7 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
   }
 
   return (
-    <form onSubmit={submit} className="max-w-sm mx-auto p-8 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
+    <form onSubmit={submit} className="max-w-sm mx-auto p-5 sm:p-8 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
       <h2 className="text-lg font-semibold text-center">Inloggen</h2>
       <div>
         <label className="text-xs uppercase text-muted-foreground">Gebruikersnaam</label>
@@ -119,13 +119,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-1 p-1 bg-card rounded-lg border border-border">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
+        <div className="flex gap-1 p-1 bg-card rounded-lg border border-border overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-4 py-2 rounded-md text-sm transition ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm whitespace-nowrap transition ${
                 tab === t.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -138,7 +138,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             await logoutFn();
             onLogout();
           }}
-          className="text-sm px-4 py-2 rounded-md border border-border hover:bg-secondary transition"
+          className="shrink-0 text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md border border-border hover:bg-secondary transition"
         >
           Uitloggen
         </button>
@@ -154,8 +154,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="p-6 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
-      <h2 className="text-xl font-semibold">{title}</h2>
+    <div className="p-4 sm:p-6 rounded-2xl bg-card border border-border shadow-elegant space-y-4">
+      <h2 className="text-lg sm:text-xl font-semibold">{title}</h2>
       {children}
     </div>
   );
@@ -296,10 +296,10 @@ function EventsPanel() {
 
   return (
     <Panel title="Events beheren">
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
         <Field label="Datum & tijd"><input type="datetime-local" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
-        <div className="md:col-span-3">
+        <div className="sm:col-span-2 md:col-span-3">
           <Field label="Beschrijving"><textarea rows={3} className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
         </div>
       </div>
@@ -316,16 +316,16 @@ function EventsPanel() {
       </button>
       <div className="space-y-2 pt-4">
         {events?.map((e) => (
-          <div key={e.id} className="flex items-start justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
-            <div>
-              <p className="font-medium">{e.title}</p>
+          <div key={e.id} className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
+            <div className="min-w-0">
+              <p className="font-medium break-words">{e.title}</p>
               <p className="text-xs text-primary">
                 {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}
               </p>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{e.description}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{e.description}</p>
             </div>
             <button
-              className="text-sm text-destructive hover:underline"
+              className="text-sm text-destructive hover:underline self-start shrink-0"
               onClick={async () => {
                 await delFn({ data: { id: e.id } });
                 await qc.invalidateQueries({ queryKey: ["events"] });
@@ -351,7 +351,7 @@ function StaffPanel() {
 
   return (
     <Panel title="Staff beheren">
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Field label="Naam"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
         <Field label="Rol"><input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} /></Field>
         <Field label="Beschrijving"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
@@ -391,7 +391,7 @@ function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Pro
   if (editing) {
     return (
       <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
-        <div className="grid md:grid-cols-3 gap-2">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
           <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
           <input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} />
           <input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -418,14 +418,14 @@ function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Pro
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
-      <div>
-        <p className="font-medium">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
+      <div className="min-w-0">
+        <p className="font-medium break-words">
           {row.name} <span className="text-primary text-sm">· {row.role}</span>
         </p>
-        <p className="text-sm text-muted-foreground">{row.description}</p>
+        <p className="text-sm text-muted-foreground break-words">{row.description}</p>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-3 shrink-0">
         <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
         <button className="text-sm text-destructive hover:underline" onClick={onDelete}>Verwijder</button>
       </div>
@@ -448,10 +448,10 @@ function ChangelogPanel() {
 
   return (
     <Panel title="Changelog beheren">
-      <div className="grid md:grid-cols-2 gap-3">
+      <div className="grid sm:grid-cols-2 gap-3">
         <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
         <Field label="Datum"><input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
-        <div className="md:col-span-2">
+        <div className="sm:col-span-2">
           <Field label="Beschrijving"><textarea rows={4} className={inputCls} value={body} onChange={(e) => setBody(e.target.value)} /></Field>
         </div>
       </div>
@@ -491,7 +491,7 @@ function ChangelogRowEditor({ row, onDelete }: { row: ChangelogRow; onDelete: ()
   if (editing) {
     return (
       <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
-        <div className="grid md:grid-cols-2 gap-2">
+        <div className="grid sm:grid-cols-2 gap-2">
           <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} />
           <input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} />
         </div>
@@ -518,11 +518,11 @@ function ChangelogRowEditor({ row, onDelete }: { row: ChangelogRow; onDelete: ()
   }
 
   return (
-    <div className="flex items-start justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
       <div className="min-w-0">
         <p className="text-xs text-primary font-mono">{new Date(row.entry_date).toLocaleDateString("nl-NL", { dateStyle: "long" })}</p>
-        <p className="font-medium">{row.title}</p>
-        <p className="text-sm text-muted-foreground whitespace-pre-wrap">{row.body}</p>
+        <p className="font-medium break-words">{row.title}</p>
+        <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{row.body}</p>
       </div>
       <div className="flex gap-3 shrink-0">
         <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
@@ -544,7 +544,7 @@ function RanksPanelInner() {
 
   return (
     <Panel title="Ranks beheren">
-      <div className="grid md:grid-cols-4 gap-3">
+      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
         <Field label="Naam"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
         <Field label="Vereiste"><input className={inputCls} placeholder="bv. 10 uur speeltijd" value={requirement} onChange={(e) => setRequirement(e.target.value)} /></Field>
         <Field label="Beschrijving"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
@@ -600,10 +600,10 @@ function RankRowEditor({ row, prevId, nextId, onDelete }: { row: RankRow; prevId
   if (editing) {
     return (
       <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
-        <div className="grid md:grid-cols-5 gap-2">
+        <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-2">
           <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
           <input className={inputCls} value={requirement} onChange={(e) => setRequirement(e.target.value)} />
-          <input className={inputCls + " md:col-span-2"} value={description} onChange={(e) => setDescription(e.target.value)} />
+          <input className={inputCls + " sm:col-span-2"} value={description} onChange={(e) => setDescription(e.target.value)} />
           <div className="flex gap-2">
             <input type="color" className="w-14 h-10 rounded-lg bg-input border border-border" value={color} onChange={(e) => setColor(e.target.value)} />
             <input type="number" className={inputCls} value={sortOrder} onChange={(e) => setSortOrder(parseInt(e.target.value || "0", 10))} />
@@ -631,7 +631,7 @@ function RankRowEditor({ row, prevId, nextId, onDelete }: { row: RankRow; prevId
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
       <div className="flex items-center gap-3 min-w-0">
         <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: row.color }} />
         <div className="min-w-0">
@@ -641,7 +641,7 @@ function RankRowEditor({ row, prevId, nextId, onDelete }: { row: RankRow; prevId
           <p className="text-sm text-muted-foreground truncate">{row.description}</p>
         </div>
       </div>
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
         <div className="flex flex-col">
           <button
             disabled={!prevId}
