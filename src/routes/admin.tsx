@@ -296,10 +296,10 @@ function EventsPanel() {
 
   return (
     <Panel title="Events beheren">
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
         <Field label="Datum & tijd"><input type="datetime-local" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
-        <div className="md:col-span-3">
+        <div className="sm:col-span-2 md:col-span-3">
           <Field label="Beschrijving"><textarea rows={3} className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
         </div>
       </div>
@@ -316,16 +316,16 @@ function EventsPanel() {
       </button>
       <div className="space-y-2 pt-4">
         {events?.map((e) => (
-          <div key={e.id} className="flex items-start justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
-            <div>
-              <p className="font-medium">{e.title}</p>
+          <div key={e.id} className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
+            <div className="min-w-0">
+              <p className="font-medium break-words">{e.title}</p>
               <p className="text-xs text-primary">
                 {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}
               </p>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{e.description}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{e.description}</p>
             </div>
             <button
-              className="text-sm text-destructive hover:underline"
+              className="text-sm text-destructive hover:underline self-start shrink-0"
               onClick={async () => {
                 await delFn({ data: { id: e.id } });
                 await qc.invalidateQueries({ queryKey: ["events"] });
@@ -351,7 +351,7 @@ function StaffPanel() {
 
   return (
     <Panel title="Staff beheren">
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Field label="Naam"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
         <Field label="Rol"><input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} /></Field>
         <Field label="Beschrijving"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
