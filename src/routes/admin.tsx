@@ -15,6 +15,7 @@ import {
   createRank,
   updateRank,
   deleteRank,
+  swapRankOrder,
   createChangelog,
   updateChangelog,
   deleteChangelog,
