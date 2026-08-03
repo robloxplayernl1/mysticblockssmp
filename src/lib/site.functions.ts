@@ -150,6 +150,31 @@ export const deleteRank = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
+const swapRanksSchema = z.object({
+  idA: z.string().uuid(),
+  idB: z.string().uuid(),
+});
+
+export const swapRankOrder = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof swapRanksSchema>) => swapRanksSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { data: rows, error: fetchError } = await db
+      .from("ranks" as never)
+      .select("id, sort_order")
+      .in("id", [data.idA, data.idB]);
+    if (fetchError) throw new Error(fetchError.message);
+    const list = (rows ?? []) as { id: string; sort_order: number }[];
+    if (list.length !== 2) throw new Error("Ranks niet gevonden");
+    const [a, b] = list;
+    const { error: errA } = await db.from("ranks" as never).update({ sort_order: b.sort_order } as never).eq("id", a.id);
+    if (errA) throw new Error(errA.message);
+    const { error: errB } = await db.from("ranks" as never).update({ sort_order: a.sort_order } as never).eq("id", b.id);
+    if (errB) throw new Error(errB.message);
+    return { ok: true as const };
+  });
+
 // ---------- Changelog ----------
 const changelogSchema = z.object({
   title: z.string().trim().min(1).max(120),
