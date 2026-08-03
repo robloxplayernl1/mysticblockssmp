@@ -391,7 +391,7 @@ function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Pro
   if (editing) {
     return (
       <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
-        <div className="grid md:grid-cols-3 gap-2">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
           <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
           <input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} />
           <input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -418,14 +418,14 @@ function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Pro
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-background/40 border border-border">
-      <div>
-        <p className="font-medium">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
+      <div className="min-w-0">
+        <p className="font-medium break-words">
           {row.name} <span className="text-primary text-sm">· {row.role}</span>
         </p>
-        <p className="text-sm text-muted-foreground">{row.description}</p>
+        <p className="text-sm text-muted-foreground break-words">{row.description}</p>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-3 shrink-0">
         <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
         <button className="text-sm text-destructive hover:underline" onClick={onDelete}>Verwijder</button>
       </div>
