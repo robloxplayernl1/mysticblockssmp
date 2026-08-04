@@ -39,7 +39,7 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
     <div className="min-h-screen bg-hero text-foreground">
       {settings?.announcement && (
         <div className="w-full bg-accent/90 text-accent-foreground text-center text-sm py-2 px-4 font-medium">
-          ✨ {settings.announcement}
+          ✨ {settings.announcement} ✨
         </div>
       )}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 border-b border-border">
