@@ -12,6 +12,8 @@ import {
   createStaff,
   deleteStaff,
   updateStaff,
+  uploadStaffAvatar,
+  removeStaffAvatar,
   createRank,
   updateRank,
   deleteRank,
