@@ -384,6 +384,10 @@ function StaffPanel() {
 function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Promise<void> }) {
   const qc = useQueryClient();
   const updateFn = useServerFn(updateStaff);
+  const uploadFn = useServerFn(uploadStaffAvatar);
+  const removeAvatarFn = useServerFn(removeStaffAvatar);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(row.name);
   const [role, setRole] = useState(row.role);
@@ -421,11 +425,58 @@ function StaffRow({ row, onDelete }: { row: StaffRow; onDelete: () => void | Pro
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
-      <div className="min-w-0">
+      <div className="flex items-center gap-3 min-w-0">
+        {row.avatar_url ? (
+          <img src={row.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover border border-border shrink-0" />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-sm font-bold shrink-0">
+            {row.name.slice(0, 1).toUpperCase()}
+          </div>
+        )}
+        <div className="min-w-0">
         <p className="font-medium break-words">
           {row.name} <span className="text-primary text-sm">· {row.role}</span>
         </p>
         <p className="text-sm text-muted-foreground break-words">{row.description}</p>
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <label className="text-xs text-primary hover:underline cursor-pointer">
+            {uploading ? "Uploaden…" : row.avatar_url ? "Foto wijzigen" : "Foto uploaden"}
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="hidden"
+              disabled={uploading}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (!file) return;
+                setUploadError(null);
+                if (file.size > 3_000_000) { setUploadError("Max 3MB"); return; }
+                setUploading(true);
+                try {
+                  const buf = new Uint8Array(await file.arrayBuffer());
+                  let bin = "";
+                  for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+                  await uploadFn({ data: { id: row.id, fileName: file.name, contentType: file.type, dataBase64: btoa(bin) } });
+                  await qc.invalidateQueries({ queryKey: ["staff"] });
+                } catch (err) {
+                  setUploadError(err instanceof Error ? err.message : "Upload mislukt");
+                } finally { setUploading(false); }
+              }}
+            />
+          </label>
+          {row.avatar_url && (
+            <button
+              className="text-xs text-destructive hover:underline"
+              onClick={async () => {
+                await removeAvatarFn({ data: { id: row.id } });
+                await qc.invalidateQueries({ queryKey: ["staff"] });
+              }}
+            >Foto verwijderen</button>
+          )}
+          {uploadError && <span className="text-xs text-destructive">{uploadError}</span>}
+        </div>
+        </div>
       </div>
       <div className="flex gap-3 shrink-0">
         <button className="text-sm text-primary hover:underline" onClick={() => setEditing(true)}>Bewerk</button>
