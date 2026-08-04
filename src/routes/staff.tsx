@@ -27,9 +27,18 @@ function StaffPage() {
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {staff?.map((s) => (
             <div key={s.id} className="p-5 sm:p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/50 transition">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary-foreground shadow-glow">
-                {s.name.slice(0, 1).toUpperCase()}
-              </div>
+              {s.avatar_url ? (
+                <img
+                  src={s.avatar_url}
+                  alt={`Profielfoto van ${s.name}`}
+                  loading="lazy"
+                  className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full object-cover shadow-glow border border-primary/40"
+                />
+              ) : (
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary-foreground shadow-glow">
+                  {s.name.slice(0, 1).toUpperCase()}
+                </div>
+              )}
               <h2 className="text-base sm:text-lg font-semibold break-words">{s.name}</h2>
               <p className="text-primary text-sm mb-3">{s.role}</p>
               <p className="text-sm text-muted-foreground">{s.description}</p>

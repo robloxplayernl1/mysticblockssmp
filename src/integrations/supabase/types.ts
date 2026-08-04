@@ -142,6 +142,7 @@ export type Database = {
       }
       staff: {
         Row: {
+          avatar_url: string
           created_at: string
           description: string
           id: string
@@ -150,6 +151,7 @@ export type Database = {
           sort_order: number
         }
         Insert: {
+          avatar_url?: string
           created_at?: string
           description?: string
           id?: string
@@ -158,6 +160,7 @@ export type Database = {
           sort_order?: number
         }
         Update: {
+          avatar_url?: string
           created_at?: string
           description?: string
           id?: string

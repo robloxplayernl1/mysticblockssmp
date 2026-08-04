@@ -17,6 +17,7 @@ import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiStatusRouteImport } from './routes/api/status'
+import { Route as ApiPublicStaffAvatarPathRouteImport } from './routes/api/public/staff-avatar.$path'
 
 const StaffRoute = StaffRouteImport.update({
   id: '/staff',
@@ -58,6 +59,12 @@ const ApiStatusRoute = ApiStatusRouteImport.update({
   path: '/api/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicStaffAvatarPathRoute =
+  ApiPublicStaffAvatarPathRouteImport.update({
+    id: '/api/public/staff-avatar/$path',
+    path: '/api/public/staff-avatar/$path',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +86,7 @@ export interface FileRoutesByTo {
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +98,7 @@ export interface FileRoutesById {
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +111,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/staff-avatar/$path'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/staff-avatar/$path'
   id:
     | '__root__'
     | '/'
@@ -121,6 +133,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/staff-avatar/$path'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +145,7 @@ export interface RootRouteChildren {
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
   ApiStatusRoute: typeof ApiStatusRoute
+  ApiPublicStaffAvatarPathRoute: typeof ApiPublicStaffAvatarPathRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/staff-avatar/$path': {
+      id: '/api/public/staff-avatar/$path'
+      path: '/api/public/staff-avatar/$path'
+      fullPath: '/api/public/staff-avatar/$path'
+      preLoaderRoute: typeof ApiPublicStaffAvatarPathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +225,7 @@ const rootRouteChildren: RootRouteChildren = {
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
   ApiStatusRoute: ApiStatusRoute,
+  ApiPublicStaffAvatarPathRoute: ApiPublicStaffAvatarPathRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

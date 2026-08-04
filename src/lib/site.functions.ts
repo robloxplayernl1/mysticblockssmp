@@ -109,6 +109,45 @@ export const updateStaff = createServerFn({ method: "POST" })
   });
 
 // ---------- Ranks ----------
+const avatarSchema = z.object({
+  id: z.string().uuid(),
+  fileName: z.string().trim().min(1).max(200),
+  contentType: z.string().trim().min(1).max(100),
+  dataBase64: z.string().min(1).max(4_000_000),
+});
+
+export const uploadStaffAvatar = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof avatarSchema>) => avatarSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    if (!/^image\/(png|jpeg|jpg|webp|gif)$/.test(data.contentType)) {
+      throw new Error("Alleen afbeeldingen zijn toegestaan");
+    }
+    const bin = Uint8Array.from(atob(data.dataBase64), (c) => c.charCodeAt(0));
+    if (bin.byteLength > 3_000_000) throw new Error("Afbeelding is te groot (max 3MB)");
+    const ext = (data.fileName.split(".").pop() ?? "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
+    const path = `${data.id}-${Date.now()}.${ext}`;
+    const db = await admin();
+    const { error: upErr } = await db.storage
+      .from("staff-avatars")
+      .upload(path, bin, { contentType: data.contentType, upsert: true });
+    if (upErr) throw new Error(upErr.message);
+    const url = `/api/public/staff-avatar/${path}`;
+    const { error } = await db.from("staff").update({ avatar_url: url } as never).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const, url };
+  });
+
+export const removeStaffAvatar = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("staff").update({ avatar_url: "" } as never).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
 const rankSchema = z.object({
   name: z.string().trim().min(1).max(80),
   requirement: z.string().trim().max(200),

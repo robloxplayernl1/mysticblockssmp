@@ -36,6 +36,7 @@ export type StaffRow = {
   role: string;
   description: string;
   sort_order: number;
+  avatar_url: string;
 };
 
 export type RankRow = {
@@ -103,7 +104,7 @@ export const staffQuery = queryOptions({
   queryFn: async (): Promise<StaffRow[]> => {
     const { data, error } = await supabase
       .from("staff")
-      .select("id, name, role, description, sort_order")
+      .select("id, name, role, description, sort_order, avatar_url")
       .order("sort_order", { ascending: true });
     if (error) throw error;
     return (data ?? []) as StaffRow[];
