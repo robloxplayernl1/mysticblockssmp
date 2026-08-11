@@ -253,3 +253,71 @@ export const deleteChangelog = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+// ---------- Contact & datavezoeken ----------
+const requestSchema = z.object({
+  kind: z.enum(["contact", "inzage", "verwijdering", "export"]),
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  minecraft_name: z.string().trim().max(60).default(""),
+  subject: z.string().trim().max(150).default(""),
+  message: z.string().trim().min(1).max(2000),
+});
+
+export const submitRequest = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof requestSchema>) => requestSchema.parse(data))
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const { error } = await db.from("contact_requests" as never).insert(data as never);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export type AdminRequestRow = {
+  id: string;
+  kind: string;
+  name: string;
+  email: string;
+  minecraft_name: string;
+  subject: string;
+  message: string;
+  handled: boolean;
+  created_at: string;
+};
+
+export const listRequests = createServerFn({ method: "POST" }).handler(async () => {
+  await (await import("./admin-session.server")).requireAdminSession();
+  const db = await admin();
+  const { data, error } = await db
+    .from("contact_requests" as never)
+    .select("id, kind, name, email, minecraft_name, subject, message, handled, created_at")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as AdminRequestRow[];
+});
+
+export const setRequestHandled = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string; handled: boolean }) =>
+    z.object({ id: z.string().uuid(), handled: z.boolean() }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db
+      .from("contact_requests" as never)
+      .update({ handled: data.handled } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteRequest = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("contact_requests" as never).delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
