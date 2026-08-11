@@ -38,6 +38,42 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_requests: {
+        Row: {
+          created_at: string
+          email: string
+          handled: boolean
+          id: string
+          kind: string
+          message: string
+          minecraft_name: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          handled?: boolean
+          id?: string
+          kind?: string
+          message?: string
+          minecraft_name?: string
+          name?: string
+          subject?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          handled?: boolean
+          id?: string
+          kind?: string
+          message?: string
+          minecraft_name?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string
