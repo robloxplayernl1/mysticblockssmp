@@ -21,6 +21,10 @@ import {
   createChangelog,
   updateChangelog,
   deleteChangelog,
+  listRequests,
+  setRequestHandled,
+  deleteRequest,
+  type AdminRequestRow,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
