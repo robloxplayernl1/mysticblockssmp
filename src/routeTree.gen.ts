@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RanksRouteImport } from './routes/ranks'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -34,9 +36,19 @@ const RanksRoute = RanksRouteImport.update({
   path: '/ranks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangelogRoute = ChangelogRouteImport.update({
@@ -70,7 +82,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/changelog': typeof ChangelogRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
@@ -81,7 +95,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/changelog': typeof ChangelogRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
@@ -93,7 +109,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/changelog': typeof ChangelogRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
@@ -106,7 +124,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/changelog'
+    | '/disclaimer'
     | '/events'
+    | '/privacy'
     | '/ranks'
     | '/rules'
     | '/staff'
@@ -117,7 +137,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/changelog'
+    | '/disclaimer'
     | '/events'
+    | '/privacy'
     | '/ranks'
     | '/rules'
     | '/staff'
@@ -128,7 +150,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/changelog'
+    | '/disclaimer'
     | '/events'
+    | '/privacy'
     | '/ranks'
     | '/rules'
     | '/staff'
@@ -140,7 +164,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ChangelogRoute: typeof ChangelogRoute
+  DisclaimerRoute: typeof DisclaimerRoute
   EventsRoute: typeof EventsRoute
+  PrivacyRoute: typeof PrivacyRoute
   RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
@@ -171,11 +197,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RanksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events': {
       id: '/events'
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/changelog': {
@@ -220,7 +260,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ChangelogRoute: ChangelogRoute,
+  DisclaimerRoute: DisclaimerRoute,
   EventsRoute: EventsRoute,
+  PrivacyRoute: PrivacyRoute,
   RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
