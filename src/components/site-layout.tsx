@@ -87,9 +87,19 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
       <main>{children}</main>
       <footer className="border-t border-border mt-24 py-8 text-center text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} MysticBlocksSMP · Niet aangesloten bij Mojang of Microsoft</p>
-        <Link to="/admin" className="text-xs text-muted-foreground/60 hover:text-primary mt-2 inline-block">
-          Admin
-        </Link>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground/70">
+          <Link to="/privacy" className="hover:text-primary transition-colors">
+            Privacyverklaring
+          </Link>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/disclaimer" className="hover:text-primary transition-colors">
+            Disclaimer
+          </Link>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/admin" className="hover:text-primary transition-colors">
+            Admin
+          </Link>
+        </div>
       </footer>
     </div>
   );
