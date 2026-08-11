@@ -164,7 +164,10 @@ function RequestsPanel() {
   const load = useServerFn(listRequests);
   const toggle = useServerFn(setRequestHandled);
   const remove = useServerFn(deleteRequest);
-  const { data, refetch } = useQuery({ queryKey: ["admin_requests"], queryFn: () => load() });
+  const { data, refetch } = useQuery<AdminRequestRow[]>({
+    queryKey: ["admin_requests"],
+    queryFn: () => load() as Promise<AdminRequestRow[]>,
+  });
 
   const labels: Record<string, string> = {
     contact: "Contact",
