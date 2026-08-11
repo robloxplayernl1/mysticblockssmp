@@ -10,6 +10,7 @@ const nav = [
   { to: "/rules", label: "Regels" },
   { to: "/staff", label: "Staff" },
   { to: "/changelog", label: "Changelog" },
+  { to: "/contact", label: "Contact" },
 ];
 
 export function SiteLayout({ children, bypassMaintenance }: { children: ReactNode; bypassMaintenance?: boolean }) {
@@ -94,6 +95,14 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
           <span className="hidden sm:inline">·</span>
           <Link to="/disclaimer" className="hover:text-primary transition-colors">
             Disclaimer
+          </Link>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/data-verzoek" className="hover:text-primary transition-colors">
+            Datavezoek
+          </Link>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/contact" className="hover:text-primary transition-colors">
+            Contact
           </Link>
           <span className="hidden sm:inline">·</span>
           <Link to="/admin" className="hover:text-primary transition-colors">
