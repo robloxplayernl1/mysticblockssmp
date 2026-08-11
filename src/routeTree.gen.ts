@@ -15,6 +15,8 @@ import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as DataVerzoekRouteImport } from './routes/data-verzoek'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -51,6 +53,16 @@ const DisclaimerRoute = DisclaimerRouteImport.update({
   path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DataVerzoekRoute = DataVerzoekRouteImport.update({
+  id: '/data-verzoek',
+  path: '/data-verzoek',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChangelogRoute = ChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
@@ -82,6 +94,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
   '/privacy': typeof PrivacyRoute
@@ -95,6 +109,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
   '/privacy': typeof PrivacyRoute
@@ -109,6 +125,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
   '/privacy': typeof PrivacyRoute
@@ -124,6 +142,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/changelog'
+    | '/contact'
+    | '/data-verzoek'
     | '/disclaimer'
     | '/events'
     | '/privacy'
@@ -137,6 +157,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/changelog'
+    | '/contact'
+    | '/data-verzoek'
     | '/disclaimer'
     | '/events'
     | '/privacy'
@@ -150,6 +172,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/changelog'
+    | '/contact'
+    | '/data-verzoek'
     | '/disclaimer'
     | '/events'
     | '/privacy'
@@ -164,6 +188,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ChangelogRoute: typeof ChangelogRoute
+  ContactRoute: typeof ContactRoute
+  DataVerzoekRoute: typeof DataVerzoekRoute
   DisclaimerRoute: typeof DisclaimerRoute
   EventsRoute: typeof EventsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -218,6 +244,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/data-verzoek': {
+      id: '/data-verzoek'
+      path: '/data-verzoek'
+      fullPath: '/data-verzoek'
+      preLoaderRoute: typeof DataVerzoekRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/changelog': {
       id: '/changelog'
       path: '/changelog'
@@ -260,6 +300,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ChangelogRoute: ChangelogRoute,
+  ContactRoute: ContactRoute,
+  DataVerzoekRoute: DataVerzoekRoute,
   DisclaimerRoute: DisclaimerRoute,
   EventsRoute: EventsRoute,
   PrivacyRoute: PrivacyRoute,

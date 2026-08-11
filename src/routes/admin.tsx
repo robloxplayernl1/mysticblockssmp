@@ -21,6 +21,10 @@ import {
   createChangelog,
   updateChangelog,
   deleteChangelog,
+  listRequests,
+  setRequestHandled,
+  deleteRequest,
+  type AdminRequestRow,
 } from "@/lib/site.functions";
 
 export const Route = createFileRoute("/admin")({
@@ -110,13 +114,14 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks" | "changelog">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks" | "changelog" | "requests">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
     { id: "staff" as const, label: "Staff" },
     { id: "ranks" as const, label: "Ranks" },
     { id: "changelog" as const, label: "Changelog" },
+    { id: "requests" as const, label: "Verzoeken" },
   ];
 
   return (
@@ -150,7 +155,68 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "staff" && <StaffPanel />}
       {tab === "ranks" && <RanksPanel />}
       {tab === "changelog" && <ChangelogPanel />}
+      {tab === "requests" && <RequestsPanel />}
     </div>
+  );
+}
+
+function RequestsPanel() {
+  const load = useServerFn(listRequests);
+  const toggle = useServerFn(setRequestHandled);
+  const remove = useServerFn(deleteRequest);
+  const { data, refetch } = useQuery<AdminRequestRow[]>({
+    queryKey: ["admin_requests"],
+    queryFn: () => load() as Promise<AdminRequestRow[]>,
+  });
+
+  const labels: Record<string, string> = {
+    contact: "Contact",
+    inzage: "Inzage",
+    verwijdering: "Verwijdering",
+    export: "Export",
+  };
+
+  return (
+    <Panel title="Binnengekomen verzoeken">
+      {(data ?? []).length === 0 && <p className="text-sm text-muted-foreground">Nog geen verzoeken.</p>}
+      <div className="space-y-3">
+        {(data ?? []).map((r) => (
+          <div key={r.id} className="p-3 sm:p-4 rounded-lg bg-secondary/40 border border-border space-y-2">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="px-2 py-0.5 rounded-md bg-primary/20 text-primary">{labels[r.kind] ?? r.kind}</span>
+              <span className="text-muted-foreground">{new Date(r.created_at).toLocaleString("nl-NL")}</span>
+              {r.handled && <span className="px-2 py-0.5 rounded-md bg-green-500/20 text-green-400">Afgehandeld</span>}
+            </div>
+            <div className="text-sm font-medium break-words">
+              {r.name} · {r.email}
+              {r.minecraft_name ? ` · MC: ${r.minecraft_name}` : ""}
+            </div>
+            {r.subject && <div className="text-sm break-words">{r.subject}</div>}
+            <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{r.message}</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={async () => {
+                  await toggle({ data: { id: r.id, handled: !r.handled } });
+                  await refetch();
+                }}
+                className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-secondary transition"
+              >
+                {r.handled ? "Markeer als open" : "Markeer afgehandeld"}
+              </button>
+              <button
+                onClick={async () => {
+                  await remove({ data: { id: r.id } });
+                  await refetch();
+                }}
+                className="text-xs px-3 py-1.5 rounded-md border border-destructive/50 text-destructive hover:bg-destructive/10 transition"
+              >
+                Verwijderen
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Panel>
   );
 }
 
