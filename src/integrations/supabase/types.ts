@@ -74,12 +74,45 @@ export type Database = {
         }
         Relationships: []
       }
+      event_rsvps: {
+        Row: {
+          browser_token: string
+          created_at: string
+          event_id: string
+          id: string
+          minecraft_name: string
+        }
+        Insert: {
+          browser_token?: string
+          created_at?: string
+          event_id: string
+          id?: string
+          minecraft_name: string
+        }
+        Update: {
+          browser_token?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          minecraft_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           created_at: string
           description: string
           event_date: string
           id: string
+          rsvp_enabled: boolean
           title: string
         }
         Insert: {
@@ -87,6 +120,7 @@ export type Database = {
           description?: string
           event_date: string
           id?: string
+          rsvp_enabled?: boolean
           title: string
         }
         Update: {
@@ -94,7 +128,106 @@ export type Database = {
           description?: string
           event_date?: string
           id?: string
+          rsvp_enabled?: boolean
           title?: string
+        }
+        Relationships: []
+      }
+      poll_options: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          poll_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          poll_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          poll_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_options_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poll_votes: {
+        Row: {
+          browser_token: string
+          created_at: string
+          id: string
+          option_id: string
+          poll_id: string
+        }
+        Insert: {
+          browser_token: string
+          created_at?: string
+          id?: string
+          option_id: string
+          poll_id: string
+        }
+        Update: {
+          browser_token?: string
+          created_at?: string
+          id?: string
+          option_id?: string
+          poll_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "poll_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      polls: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_open: boolean
+          question: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_open?: boolean
+          question: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_open?: boolean
+          question?: string
+          sort_order?: number
         }
         Relationships: []
       }
