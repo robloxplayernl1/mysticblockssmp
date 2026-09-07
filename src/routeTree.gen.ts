@@ -13,6 +13,7 @@ import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PollsRouteImport } from './routes/polls'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DataVerzoekRouteImport } from './routes/data-verzoek'
@@ -41,6 +42,11 @@ const RanksRoute = RanksRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PollsRoute = PollsRouteImport.update({
+  id: '/polls',
+  path: '/polls',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/polls': typeof PollsRoute
   '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/polls': typeof PollsRoute
   '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/polls': typeof PollsRoute
   '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/polls'
     | '/privacy'
     | '/ranks'
     | '/rules'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/polls'
     | '/privacy'
     | '/ranks'
     | '/rules'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/polls'
     | '/privacy'
     | '/ranks'
     | '/rules'
@@ -192,6 +204,7 @@ export interface RootRouteChildren {
   DataVerzoekRoute: typeof DataVerzoekRoute
   DisclaimerRoute: typeof DisclaimerRoute
   EventsRoute: typeof EventsRoute
+  PollsRoute: typeof PollsRoute
   PrivacyRoute: typeof PrivacyRoute
   RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/polls': {
+      id: '/polls'
+      path: '/polls'
+      fullPath: '/polls'
+      preLoaderRoute: typeof PollsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -304,6 +324,7 @@ const rootRouteChildren: RootRouteChildren = {
   DataVerzoekRoute: DataVerzoekRoute,
   DisclaimerRoute: DisclaimerRoute,
   EventsRoute: EventsRoute,
+  PollsRoute: PollsRoute,
   PrivacyRoute: PrivacyRoute,
   RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,

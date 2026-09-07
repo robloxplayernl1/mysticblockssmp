@@ -28,6 +28,7 @@ export type EventRow = {
   description: string;
   event_date: string;
   created_at: string;
+  rsvp_enabled: boolean;
 };
 
 export type StaffRow = {
@@ -92,7 +93,7 @@ export const eventsQuery = queryOptions({
   queryFn: async (): Promise<EventRow[]> => {
     const { data, error } = await supabase
       .from("events")
-      .select("id, title, description, event_date, created_at")
+      .select("id, title, description, event_date, created_at, rsvp_enabled")
       .order("event_date", { ascending: true });
     if (error) throw error;
     return (data ?? []) as EventRow[];
@@ -123,8 +124,52 @@ export const ranksQuery = queryOptions({
   },
 });
 
+export type RsvpRow = { id: string; event_id: string; minecraft_name: string; created_at: string };
+
+export const rsvpsQuery = queryOptions({
+  queryKey: ["event_rsvps"],
+  queryFn: async (): Promise<RsvpRow[]> => {
+    const { data, error } = await supabase
+      .from("event_rsvps" as never)
+      .select("id, event_id, minecraft_name, created_at")
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as unknown as RsvpRow[];
+  },
+});
+
+export type PollOptionRow = { id: string; poll_id: string; label: string; sort_order: number };
+export type PollRow = { id: string; question: string; description: string; is_open: boolean; created_at: string };
+export type PollVoteRow = { id: string; poll_id: string; option_id: string };
+
+export const pollsQuery = queryOptions({
+  queryKey: ["polls"],
+  queryFn: async (): Promise<{ polls: PollRow[]; options: PollOptionRow[]; votes: PollVoteRow[] }> => {
+    const [p, o, v] = await Promise.all([
+      supabase.from("polls" as never).select("id, question, description, is_open, created_at").order("created_at", { ascending: false }),
+      supabase.from("poll_options" as never).select("id, poll_id, label, sort_order").order("sort_order", { ascending: true }),
+      supabase.from("poll_votes" as never).select("id, poll_id, option_id"),
+    ]);
+    if (p.error) throw p.error;
+    if (o.error) throw o.error;
+    if (v.error) throw v.error;
+    return {
+      polls: (p.data ?? []) as unknown as PollRow[],
+      options: (o.data ?? []) as unknown as PollOptionRow[],
+      votes: (v.data ?? []) as unknown as PollVoteRow[],
+    };
+  },
+});
+
 export type ServerStatus = {
-  java: { online: boolean; players: { online: number; max: number } };
+  java: {
+    online: boolean;
+    players: { online: number; max: number };
+    version: string;
+    ping: number | null;
+    motd: string;
+    checkedAt: string;
+  };
 };
 
 export const statusQuery = queryOptions({
@@ -134,6 +179,6 @@ export const statusQuery = queryOptions({
     if (!res.ok) throw new Error("status fetch failed");
     return (await res.json()) as ServerStatus;
   },
-  refetchInterval: 60_000,
-  staleTime: 30_000,
+  refetchInterval: 30_000,
+  staleTime: 15_000,
 });
