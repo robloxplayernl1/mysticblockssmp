@@ -321,3 +321,150 @@ export const deleteRequest = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+// ---------- Event RSVP ----------
+const rsvpSchema = z.object({
+  event_id: z.string().uuid(),
+  minecraft_name: z.string().trim().min(2).max(32).regex(/^[A-Za-z0-9_]+$/, "Alleen letters, cijfers en _"),
+  browser_token: z.string().trim().min(8).max(80),
+});
+
+export const submitRsvp = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof rsvpSchema>) => rsvpSchema.parse(data))
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const { data: ev, error: evErr } = await db
+      .from("events" as never)
+      .select("id, event_date, rsvp_enabled")
+      .eq("id", data.event_id)
+      .maybeSingle();
+    if (evErr) throw new Error(evErr.message);
+    const event = ev as unknown as { event_date: string; rsvp_enabled: boolean } | null;
+    if (!event) throw new Error("Event niet gevonden");
+    if (!event.rsvp_enabled) throw new Error("Aanmelden is uitgeschakeld voor dit event");
+    if (new Date(event.event_date).getTime() < Date.now()) throw new Error("Dit event is al voorbij");
+    const { error } = await db.from("event_rsvps" as never).insert(data as never);
+    if (error) {
+      if (error.code === "23505") throw new Error("Deze naam is al aangemeld voor dit event");
+      throw new Error(error.message);
+    }
+    return { ok: true as const };
+  });
+
+export const cancelRsvp = createServerFn({ method: "POST" })
+  .inputValidator((data: { event_id: string; browser_token: string }) =>
+    z.object({ event_id: z.string().uuid(), browser_token: z.string().trim().min(8).max(80) }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const { error } = await db
+      .from("event_rsvps" as never)
+      .delete()
+      .eq("event_id", data.event_id)
+      .eq("browser_token", data.browser_token);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteRsvp = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("event_rsvps" as never).delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const setEventRsvpEnabled = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string; enabled: boolean }) =>
+    z.object({ id: z.string().uuid(), enabled: z.boolean() }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db
+      .from("events" as never)
+      .update({ rsvp_enabled: data.enabled } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+// ---------- Polls ----------
+const pollSchema = z.object({
+  question: z.string().trim().min(3).max(200),
+  description: z.string().trim().max(500).default(""),
+  options: z.array(z.string().trim().min(1).max(100)).min(2).max(10),
+});
+
+export const createPoll = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof pollSchema>) => pollSchema.parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { data: poll, error } = await db
+      .from("polls" as never)
+      .insert({ question: data.question, description: data.description } as never)
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+    const pollId = (poll as unknown as { id: string }).id;
+    const rows = data.options.map((label, i) => ({ poll_id: pollId, label, sort_order: i }));
+    const { error: optErr } = await db.from("poll_options" as never).insert(rows as never);
+    if (optErr) throw new Error(optErr.message);
+    return { ok: true as const };
+  });
+
+export const setPollOpen = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string; open: boolean }) =>
+    z.object({ id: z.string().uuid(), open: z.boolean() }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { error } = await db.from("polls" as never).update({ is_open: data.open } as never).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deletePoll = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    await db.from("poll_votes" as never).delete().eq("poll_id", data.id);
+    await db.from("poll_options" as never).delete().eq("poll_id", data.id);
+    const { error } = await db.from("polls" as never).delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const submitVote = createServerFn({ method: "POST" })
+  .inputValidator((data: { poll_id: string; option_id: string; browser_token: string }) =>
+    z
+      .object({
+        poll_id: z.string().uuid(),
+        option_id: z.string().uuid(),
+        browser_token: z.string().trim().min(8).max(80),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const { data: poll, error: pErr } = await db
+      .from("polls" as never)
+      .select("id, is_open")
+      .eq("id", data.poll_id)
+      .maybeSingle();
+    if (pErr) throw new Error(pErr.message);
+    const row = poll as unknown as { is_open: boolean } | null;
+    if (!row) throw new Error("Peiling niet gevonden");
+    if (!row.is_open) throw new Error("Deze peiling is gesloten");
+    const { error } = await db.from("poll_votes" as never).insert(data as never);
+    if (error) {
+      if (error.code === "23505") throw new Error("Je hebt al gestemd op deze peiling");
+      throw new Error(error.message);
+    }
+    return { ok: true as const };
+  });
