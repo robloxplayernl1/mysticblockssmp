@@ -110,24 +110,33 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          end_date: string | null
           event_date: string
           id: string
+          location: string
+          max_participants: number
           rsvp_enabled: boolean
           title: string
         }
         Insert: {
           created_at?: string
           description?: string
+          end_date?: string | null
           event_date: string
           id?: string
+          location?: string
+          max_participants?: number
           rsvp_enabled?: boolean
           title: string
         }
         Update: {
           created_at?: string
           description?: string
+          end_date?: string | null
           event_date?: string
           id?: string
+          location?: string
+          max_participants?: number
           rsvp_enabled?: boolean
           title?: string
         }

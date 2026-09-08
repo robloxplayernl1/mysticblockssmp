@@ -8,6 +8,13 @@
       "when": 1788708954943,
       "tag": "0000_rsvp_and_polls",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788876253425,
+      "tag": "0001_event_details",
+      "breakpoints": true
     }
   ]
 }

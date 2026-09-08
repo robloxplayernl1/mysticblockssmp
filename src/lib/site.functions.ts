@@ -40,6 +40,9 @@ const eventSchema = z.object({
   title: z.string().trim().min(1).max(120),
   description: z.string().trim().max(2000),
   event_date: z.string().min(1),
+  end_date: z.string().min(1).nullable().optional(),
+  location: z.string().trim().max(160).optional(),
+  max_participants: z.number().int().min(0).max(10000).optional(),
 });
 
 export const createEvent = createServerFn({ method: "POST" })
@@ -47,10 +50,41 @@ export const createEvent = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await (await import("./admin-session.server")).requireAdminSession();
     const db = await admin();
-    const { error } = await db.from("events").insert(data);
+    const { error } = await db.from("events").insert({
+      title: data.title,
+      description: data.description,
+      event_date: data.event_date,
+      end_date: data.end_date ?? null,
+      location: data.location ?? "",
+      max_participants: data.max_participants ?? 0,
+    } as never);
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+export const updateEvent = createServerFn({ method: "POST" })
+  .inputValidator((data: z.infer<typeof eventSchema> & { id: string }) =>
+    eventSchema.extend({ id: z.string().uuid() }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    await (await import("./admin-session.server")).requireAdminSession();
+    const db = await admin();
+    const { id, ...rest } = data;
+    const { error } = await db
+      .from("events")
+      .update({
+        title: rest.title,
+        description: rest.description,
+        event_date: rest.event_date,
+        end_date: rest.end_date ?? null,
+        location: rest.location ?? "",
+        max_participants: rest.max_participants ?? 0,
+      } as never)
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
 
 export const deleteEvent = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
@@ -335,15 +369,30 @@ export const submitRsvp = createServerFn({ method: "POST" })
     const db = await admin();
     const { data: ev, error: evErr } = await db
       .from("events" as never)
-      .select("id, event_date, rsvp_enabled")
+      .select("id, event_date, end_date, rsvp_enabled, max_participants")
       .eq("id", data.event_id)
       .maybeSingle();
     if (evErr) throw new Error(evErr.message);
-    const event = ev as unknown as { event_date: string; rsvp_enabled: boolean } | null;
+    const event = ev as unknown as {
+      event_date: string;
+      end_date: string | null;
+      rsvp_enabled: boolean;
+      max_participants: number;
+    } | null;
     if (!event) throw new Error("Event niet gevonden");
     if (!event.rsvp_enabled) throw new Error("Aanmelden is uitgeschakeld voor dit event");
-    if (new Date(event.event_date).getTime() < Date.now()) throw new Error("Dit event is al voorbij");
+    const endsAt = new Date(event.end_date ?? event.event_date).getTime();
+    if (endsAt < Date.now()) throw new Error("Dit event is al voorbij");
+    if (event.max_participants > 0) {
+      const { count, error: cErr } = await db
+        .from("event_rsvps" as never)
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", data.event_id);
+      if (cErr) throw new Error(cErr.message);
+      if ((count ?? 0) >= event.max_participants) throw new Error("Dit event zit vol");
+    }
     const { error } = await db.from("event_rsvps" as never).insert(data as never);
+
     if (error) {
       if (error.code === "23505") throw new Error("Deze naam is al aangemeld voor dit event");
       throw new Error(error.message);
