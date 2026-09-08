@@ -50,6 +50,7 @@ const PAGES = [
   { path: "/ranks", label: "Ranks" },
   { path: "/rules", label: "Regels" },
   { path: "/staff", label: "Staff" },
+  { path: "/polls", label: "Peilingen" },
   { path: "/changelog", label: "Changelog" },
 ];
 const btnCls =

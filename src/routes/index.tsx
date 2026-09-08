@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
 import { settingsQuery, eventsQuery } from "@/lib/queries";
-import { ServerStatus } from "@/components/server-status";
+import { ServerStatus, ServerStatusWidget } from "@/components/server-status";
 
 export const Route = createFileRoute("/")({
   head: () => ({
