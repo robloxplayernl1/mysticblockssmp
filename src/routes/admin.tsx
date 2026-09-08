@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
 import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
 import {
   updateSettings,
@@ -24,6 +24,11 @@ import {
   listRequests,
   setRequestHandled,
   deleteRequest,
+  deleteRsvp,
+  setEventRsvpEnabled,
+  createPoll,
+  setPollOpen,
+  deletePoll,
   type AdminRequestRow,
 } from "@/lib/site.functions";
 
@@ -114,10 +119,11 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "staff" | "ranks" | "changelog" | "requests">("settings");
+  const [tab, setTab] = useState<"settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "requests">("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
+    { id: "polls" as const, label: "Peilingen" },
     { id: "staff" as const, label: "Staff" },
     { id: "ranks" as const, label: "Ranks" },
     { id: "changelog" as const, label: "Changelog" },
@@ -152,6 +158,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       </div>
       {tab === "settings" && <SettingsPanel />}
       {tab === "events" && <EventsPanel />}
+      {tab === "polls" && <PollsPanel />}
       {tab === "staff" && <StaffPanel />}
       {tab === "ranks" && <RanksPanel />}
       {tab === "changelog" && <ChangelogPanel />}
@@ -356,8 +363,11 @@ function SettingsPanel() {
 function EventsPanel() {
   const qc = useQueryClient();
   const { data: events } = useQuery(eventsQuery);
+  const { data: rsvps } = useQuery(rsvpsQuery);
   const createFn = useServerFn(createEvent);
   const delFn = useServerFn(deleteEvent);
+  const rsvpToggle = useServerFn(setEventRsvpEnabled);
+  const rsvpDelete = useServerFn(deleteRsvp);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -384,23 +394,64 @@ function EventsPanel() {
       </button>
       <div className="space-y-2 pt-4">
         {events?.map((e) => (
-          <div key={e.id} className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-background/40 border border-border">
-            <div className="min-w-0">
-              <p className="font-medium break-words">{e.title}</p>
-              <p className="text-xs text-primary">
-                {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}
-              </p>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{e.description}</p>
+          <div key={e.id} className="p-3 rounded-lg bg-background/40 border border-border space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+              <div className="min-w-0">
+                <p className="font-medium break-words">{e.title}</p>
+                <p className="text-xs text-primary">
+                  {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}
+                </p>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{e.description}</p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0 self-start">
+                <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    checked={e.rsvp_enabled}
+                    onChange={async (ev) => {
+                      await rsvpToggle({ data: { id: e.id, enabled: ev.target.checked } });
+                      await qc.invalidateQueries({ queryKey: ["events"] });
+                    }}
+                  />
+                  Aanmelden aan
+                </label>
+                <button
+                  className="text-sm text-destructive hover:underline"
+                  onClick={async () => {
+                    await delFn({ data: { id: e.id } });
+                    await qc.invalidateQueries({ queryKey: ["events"] });
+                    await qc.invalidateQueries({ queryKey: ["event_rsvps"] });
+                  }}
+                >
+                  Verwijder
+                </button>
+              </div>
             </div>
-            <button
-              className="text-sm text-destructive hover:underline self-start shrink-0"
-              onClick={async () => {
-                await delFn({ data: { id: e.id } });
-                await qc.invalidateQueries({ queryKey: ["events"] });
-              }}
-            >
-              Verwijder
-            </button>
+            <div>
+              <p className="text-xs uppercase text-muted-foreground mb-1">
+                Aanmeldingen ({(rsvps ?? []).filter((r) => r.event_id === e.id).length})
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(rsvps ?? []).filter((r) => r.event_id === e.id).map((r) => (
+                  <span key={r.id} className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-md border border-border bg-card">
+                    {r.minecraft_name}
+                    <button
+                      className="text-destructive"
+                      title="Verwijder aanmelding"
+                      onClick={async () => {
+                        await rsvpDelete({ data: { id: r.id } });
+                        await qc.invalidateQueries({ queryKey: ["event_rsvps"] });
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+                {(rsvps ?? []).filter((r) => r.event_id === e.id).length === 0 && (
+                  <span className="text-xs text-muted-foreground">Nog geen aanmeldingen</span>
+                )}
+              </div>
+            </div>
           </div>
         ))}
       </div>
