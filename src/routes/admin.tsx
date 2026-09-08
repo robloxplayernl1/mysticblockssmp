@@ -832,3 +832,125 @@ function RankRowEditor({ row, prevId, nextId, onDelete }: { row: RankRow; prevId
     </div>
   );
 }
+function PollsPanel() {
+  const qc = useQueryClient();
+  const { data } = useQuery(pollsQuery);
+  const createFn = useServerFn(createPoll);
+  const openFn = useServerFn(setPollOpen);
+  const delFn = useServerFn(deletePoll);
+  const [question, setQuestion] = useState("");
+  const [description, setDescription] = useState("");
+  const [options, setOptions] = useState<string[]>(["", ""]);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const polls = data?.polls ?? [];
+  const allOptions = data?.options ?? [];
+  const votes = data?.votes ?? [];
+
+  return (
+    <Panel title="Peilingen beheren">
+      <div className="grid sm:grid-cols-2 gap-3">
+        <Field label="Vraag"><input className={inputCls} value={question} onChange={(e) => setQuestion(e.target.value)} /></Field>
+        <Field label="Toelichting"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+      </div>
+      <div className="space-y-2">
+        <p className="text-xs uppercase text-muted-foreground">Antwoordopties</p>
+        {options.map((o, i) => (
+          <div key={i} className="flex gap-2">
+            <input
+              className={inputCls}
+              value={o}
+              placeholder={`Optie ${i + 1}`}
+              onChange={(e) => setOptions(options.map((v, j) => (j === i ? e.target.value : v)))}
+            />
+            {options.length > 2 && (
+              <button
+                className="text-sm text-destructive px-2"
+                onClick={() => setOptions(options.filter((_, j) => j !== i))}
+              >✕</button>
+            )}
+          </div>
+        ))}
+        {options.length < 10 && (
+          <button className="text-sm text-primary hover:underline" onClick={() => setOptions([...options, ""])}>
+            + Optie toevoegen
+          </button>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          className={btnCls}
+          onClick={async () => {
+            setMsg(null);
+            try {
+              await createFn({
+                data: { question, description, options: options.map((o) => o.trim()).filter(Boolean) },
+              });
+              setQuestion(""); setDescription(""); setOptions(["", ""]);
+              await qc.invalidateQueries({ queryKey: ["polls"] });
+            } catch (e: unknown) {
+              setMsg(e instanceof Error ? e.message : "Aanmaken mislukt");
+            }
+          }}
+        >
+          Peiling aanmaken
+        </button>
+        {msg && <span className="text-sm text-destructive">{msg}</span>}
+      </div>
+
+      <div className="space-y-3 pt-4">
+        {polls.map((p) => {
+          const opts = allOptions.filter((o) => o.poll_id === p.id);
+          const total = votes.filter((v) => v.poll_id === p.id).length;
+          return (
+            <div key={p.id} className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-medium break-words">{p.question}</p>
+                  <p className="text-xs text-muted-foreground">{p.is_open ? "Open" : "Gesloten"} · {total} stemmen</p>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    className="text-sm text-primary hover:underline"
+                    onClick={async () => {
+                      await openFn({ data: { id: p.id, open: !p.is_open } });
+                      await qc.invalidateQueries({ queryKey: ["polls"] });
+                    }}
+                  >
+                    {p.is_open ? "Sluiten" : "Openen"}
+                  </button>
+                  <button
+                    className="text-sm text-destructive hover:underline"
+                    onClick={async () => {
+                      await delFn({ data: { id: p.id } });
+                      await qc.invalidateQueries({ queryKey: ["polls"] });
+                    }}
+                  >
+                    Verwijder
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-1">
+                {opts.map((o) => {
+                  const count = votes.filter((v) => v.option_id === o.id).length;
+                  const pct = total ? Math.round((count / total) * 100) : 0;
+                  return (
+                    <div key={o.id}>
+                      <div className="flex justify-between text-xs">
+                        <span className="truncate">{o.label}</span>
+                        <span className="text-muted-foreground shrink-0 ml-2">{count} · {pct}%</span>
+                      </div>
+                      <div className="h-2 rounded bg-secondary overflow-hidden">
+                        <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Panel>
+  );
+}
