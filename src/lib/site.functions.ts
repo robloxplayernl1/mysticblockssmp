@@ -369,15 +369,30 @@ export const submitRsvp = createServerFn({ method: "POST" })
     const db = await admin();
     const { data: ev, error: evErr } = await db
       .from("events" as never)
-      .select("id, event_date, rsvp_enabled")
+      .select("id, event_date, end_date, rsvp_enabled, max_participants")
       .eq("id", data.event_id)
       .maybeSingle();
     if (evErr) throw new Error(evErr.message);
-    const event = ev as unknown as { event_date: string; rsvp_enabled: boolean } | null;
+    const event = ev as unknown as {
+      event_date: string;
+      end_date: string | null;
+      rsvp_enabled: boolean;
+      max_participants: number;
+    } | null;
     if (!event) throw new Error("Event niet gevonden");
     if (!event.rsvp_enabled) throw new Error("Aanmelden is uitgeschakeld voor dit event");
-    if (new Date(event.event_date).getTime() < Date.now()) throw new Error("Dit event is al voorbij");
+    const endsAt = new Date(event.end_date ?? event.event_date).getTime();
+    if (endsAt < Date.now()) throw new Error("Dit event is al voorbij");
+    if (event.max_participants > 0) {
+      const { count, error: cErr } = await db
+        .from("event_rsvps" as never)
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", data.event_id);
+      if (cErr) throw new Error(cErr.message);
+      if ((count ?? 0) >= event.max_participants) throw new Error("Dit event zit vol");
+    }
     const { error } = await db.from("event_rsvps" as never).insert(data as never);
+
     if (error) {
       if (error.code === "23505") throw new Error("Deze naam is al aangemeld voor dit event");
       throw new Error(error.message);
