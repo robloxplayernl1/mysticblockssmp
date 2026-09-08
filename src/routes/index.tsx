@@ -83,6 +83,9 @@ function Index() {
               💬 Join Discord
             </a>
           </div>
+          <div className="mt-10 max-w-2xl mx-auto text-left">
+            <ServerStatusWidget />
+          </div>
         </div>
       </section>
 
