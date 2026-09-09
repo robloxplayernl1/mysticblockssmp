@@ -9,7 +9,7 @@ function Badge({ label, online, players }: { label: string; online: boolean; pla
       />
       <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
       <span className="text-sm font-medium">
-        {online ? `${players.online}/${players.max}` : "Offline"}
+        {online ? (players.max > 0 ? `${players.online}/${players.max}` : "Online") : "Offline"}
       </span>
     </div>
   );
@@ -66,7 +66,10 @@ export function ServerStatusWidget() {
         </button>
       </div>
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
-        <Stat label="Spelers" value={online ? `${java?.players.online ?? 0}/${java?.players.max ?? 0}` : "—"} />
+        <Stat
+          label="Spelers"
+          value={online && (java?.players.max ?? 0) > 0 ? `${java?.players.online ?? 0}/${java?.players.max ?? 0}` : "—"}
+        />
         <Stat label="Versie" value={online && java?.version ? java.version : "—"} />
         <Stat label="Ping" value={online && java?.ping != null ? `${java.ping} ms` : "—"} />
       </div>
