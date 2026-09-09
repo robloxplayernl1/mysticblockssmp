@@ -96,7 +96,7 @@ export const eventsQuery = queryOptions({
   queryFn: async (): Promise<EventRow[]> => {
     const { data, error } = await supabase
       .from("events")
-      .select("id, title, description, event_date, created_at, rsvp_enabled")
+      .select("id, title, description, event_date, created_at, rsvp_enabled, end_date, location, max_participants")
       .order("event_date", { ascending: true });
     if (error) throw error;
     return (data ?? []) as EventRow[];
