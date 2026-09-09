@@ -15,6 +15,13 @@
       "when": 1788876253425,
       "tag": "0001_event_details",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788960060257,
+      "tag": "0002_admin_users",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { useSession } from "@tanstack/react-start/server";
 import { createHash, timingSafeEqual } from "node:crypto";
 
-export type AdminSession = { admin?: boolean };
+export type AdminSession = { admin?: boolean; username?: string };
 
 function sessionConfig() {
   const password = process.env.SESSION_SECRET;
@@ -30,4 +30,29 @@ export async function requireAdminSession() {
   const session = await getAdminSession();
   if (!session.data.admin) throw new Error("Niet ingelogd als admin");
   return session;
+}
+
+function toHex(buf: ArrayBuffer) {
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export function makeSalt() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export async function hashPassword(password: string, salt: string) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: enc.encode(salt), iterations: 100_000, hash: "SHA-256" },
+    key,
+    256,
+  );
+  return toHex(bits);
 }
