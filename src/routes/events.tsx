@@ -118,6 +118,18 @@ function Calendar({
   );
 }
 
+function timeRange(e: EventRow) {
+  const start = new Date(e.event_date);
+  const startText = start.toLocaleString("nl-NL", { dateStyle: "full", timeStyle: "short" });
+  if (!e.end_date) return startText;
+  const end = new Date(e.end_date);
+  const sameDay = start.toDateString() === end.toDateString();
+  const endText = sameDay
+    ? end.toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })
+    : end.toLocaleString("nl-NL", { dateStyle: "full", timeStyle: "short" });
+  return `${startText} – ${endText}`;
+}
+
 function RsvpBox({ event, rsvps }: { event: EventRow; rsvps: RsvpRow[] }) {
   const qc = useQueryClient();
   const join = useServerFn(submitRsvp);
