@@ -361,6 +361,73 @@ function SettingsPanel() {
   );
 }
 
+function toLocalInput(iso: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function EventEditor({ event, onDone }: { event: EventRow; onDone: () => void }) {
+  const qc = useQueryClient();
+  const saveFn = useServerFn(updateEvent);
+  const [title, setTitle] = useState(event.title);
+  const [description, setDescription] = useState(event.description);
+  const [date, setDate] = useState(toLocalInput(event.event_date));
+  const [endDate, setEndDate] = useState(toLocalInput(event.end_date));
+  const [location, setLocation] = useState(event.location);
+  const [max, setMax] = useState(String(event.max_participants ?? 0));
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <div className="space-y-3 pt-2 border-t border-border">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
+        <Field label="Start"><input type="datetime-local" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label="Einde (optioneel)"><input type="datetime-local" className={inputCls} value={endDate} onChange={(e) => setEndDate(e.target.value)} /></Field>
+        <Field label="Locatie"><input className={inputCls} value={location} onChange={(e) => setLocation(e.target.value)} /></Field>
+        <Field label="Max. deelnemers (0 = geen limiet)">
+          <input type="number" min={0} className={inputCls} value={max} onChange={(e) => setMax(e.target.value)} />
+        </Field>
+        <div className="sm:col-span-2 md:col-span-3">
+          <Field label="Beschrijving"><textarea rows={3} className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+        </div>
+      </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <div className="flex gap-2">
+        <button
+          className={btnCls}
+          onClick={async () => {
+            setError(null);
+            try {
+              await saveFn({
+                data: {
+                  id: event.id,
+                  title,
+                  description,
+                  event_date: new Date(date).toISOString(),
+                  end_date: endDate ? new Date(endDate).toISOString() : null,
+                  location,
+                  max_participants: Number(max) || 0,
+                },
+              });
+              await qc.invalidateQueries({ queryKey: ["events"] });
+              onDone();
+            } catch (err) {
+              setError(err instanceof Error ? err.message : "Opslaan mislukt");
+            }
+          }}
+        >
+          Opslaan
+        </button>
+        <button className="text-sm px-4 py-2 rounded-lg border border-border hover:bg-secondary transition" onClick={onDone}>
+          Annuleren
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function EventsPanel() {
   const qc = useQueryClient();
   const { data: events } = useQuery(eventsQuery);
@@ -372,12 +439,21 @@ function EventsPanel() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [location, setLocation] = useState("");
+  const [max, setMax] = useState("0");
+  const [editing, setEditing] = useState<string | null>(null);
 
   return (
     <Panel title="Events beheren">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
-        <Field label="Datum & tijd"><input type="datetime-local" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label="Start"><input type="datetime-local" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label="Einde (optioneel)"><input type="datetime-local" className={inputCls} value={endDate} onChange={(e) => setEndDate(e.target.value)} /></Field>
+        <Field label="Locatie"><input className={inputCls} value={location} onChange={(e) => setLocation(e.target.value)} placeholder="bijv. Spawn arena" /></Field>
+        <Field label="Max. deelnemers (0 = geen limiet)">
+          <input type="number" min={0} className={inputCls} value={max} onChange={(e) => setMax(e.target.value)} />
+        </Field>
         <div className="sm:col-span-2 md:col-span-3">
           <Field label="Beschrijving"><textarea rows={3} className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
         </div>
@@ -386,8 +462,17 @@ function EventsPanel() {
         className={btnCls}
         onClick={async () => {
           if (!title || !date) return;
-          await createFn({ data: { title, description, event_date: new Date(date).toISOString() } });
-          setTitle(""); setDescription(""); setDate("");
+          await createFn({
+            data: {
+              title,
+              description,
+              event_date: new Date(date).toISOString(),
+              end_date: endDate ? new Date(endDate).toISOString() : null,
+              location,
+              max_participants: Number(max) || 0,
+            },
+          });
+          setTitle(""); setDescription(""); setDate(""); setEndDate(""); setLocation(""); setMax("0");
           await qc.invalidateQueries({ queryKey: ["events"] });
         }}
       >
@@ -401,6 +486,13 @@ function EventsPanel() {
                 <p className="font-medium break-words">{e.title}</p>
                 <p className="text-xs text-primary">
                   {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}
+                  {e.end_date
+                    ? ` – ${new Date(e.end_date).toLocaleString("nl-NL", { dateStyle: "long", timeStyle: "short" })}`
+                    : ""}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {e.location ? `📍 ${e.location}` : "Geen locatie"} ·{" "}
+                  {e.max_participants > 0 ? `max ${e.max_participants} deelnemers` : "geen deelnemerslimiet"}
                 </p>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">{e.description}</p>
               </div>
@@ -416,6 +508,9 @@ function EventsPanel() {
                   />
                   Aanmelden aan
                 </label>
+                <button className="text-sm text-primary hover:underline" onClick={() => setEditing(editing === e.id ? null : e.id)}>
+                  {editing === e.id ? "Sluit" : "Bewerk"}
+                </button>
                 <button
                   className="text-sm text-destructive hover:underline"
                   onClick={async () => {
@@ -428,6 +523,7 @@ function EventsPanel() {
                 </button>
               </div>
             </div>
+            {editing === e.id && <EventEditor event={e} onDone={() => setEditing(null)} />}
             <div>
               <p className="text-xs uppercase text-muted-foreground mb-1">
                 Aanmeldingen ({(rsvps ?? []).filter((r) => r.event_id === e.id).length})
