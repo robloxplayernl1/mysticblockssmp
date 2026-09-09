@@ -25,7 +25,7 @@ export function ServerStatus() {
       </div>
     );
   }
-  const online = data.java.online && data.java.players.max > 0;
+  const online = data.java.online;
   return (
     <div className="flex justify-center">
       <Badge label="Server" online={online} players={data.java.players} />
@@ -45,7 +45,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 export function ServerStatusWidget() {
   const { data, isLoading, isFetching, refetch } = useQuery(statusQuery);
   const java = data?.java;
-  const online = Boolean(java?.online && java.players.max > 0);
+  const online = Boolean(java?.online);
 
   return (
     <div className="mx-auto w-full max-w-xl rounded-2xl bg-card/80 border border-border shadow-elegant backdrop-blur p-4 sm:p-5">
