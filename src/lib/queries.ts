@@ -29,6 +29,9 @@ export type EventRow = {
   event_date: string;
   created_at: string;
   rsvp_enabled: boolean;
+  end_date: string | null;
+  location: string;
+  max_participants: number;
 };
 
 export type StaffRow = {
@@ -175,10 +178,11 @@ export type ServerStatus = {
 export const statusQuery = queryOptions({
   queryKey: ["server_status"],
   queryFn: async (): Promise<ServerStatus> => {
-    const res = await fetch("/api/status");
+    const res = await fetch(`/api/status?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error("status fetch failed");
     return (await res.json()) as ServerStatus;
   },
   refetchInterval: 30_000,
-  staleTime: 15_000,
+  staleTime: 0,
+  gcTime: 60_000,
 });

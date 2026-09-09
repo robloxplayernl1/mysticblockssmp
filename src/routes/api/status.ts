@@ -40,7 +40,7 @@ export const Route = createFileRoute("/api/status")({
         return new Response(JSON.stringify({ java: { ...java, checkedAt: new Date().toISOString() } }), {
           headers: {
             "content-type": "application/json",
-            "cache-control": "public, max-age=15, s-maxage=15",
+            "cache-control": "no-store",
           },
         });
       },
