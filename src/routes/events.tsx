@@ -245,7 +245,7 @@ function EventsPage() {
         )}
         <div className="space-y-4">
           {shown.map((e) => {
-            const isPast = new Date(e.event_date).getTime() < Date.now();
+            const isPast = new Date(e.end_date ?? e.event_date).getTime() < Date.now();
             const eventRsvps = (rsvps ?? []).filter((r) => r.event_id === e.id);
             return (
               <div
@@ -260,9 +260,18 @@ function EventsPage() {
                     <span className="shrink-0 text-xs px-2 py-1 rounded bg-muted text-muted-foreground">Voorbij</span>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm text-primary font-mono mb-3 break-words">
-                  📅 {new Date(e.event_date).toLocaleString("nl-NL", { dateStyle: "full", timeStyle: "short" })}
-                </p>
+                <p className="text-xs sm:text-sm text-primary font-mono mb-2 break-words">📅 {timeRange(e)}</p>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {e.location && (
+                    <span className="text-xs px-2 py-1 rounded-md bg-secondary/60 border border-border">📍 {e.location}</span>
+                  )}
+                  {e.max_participants > 0 && (
+                    <span className="text-xs px-2 py-1 rounded-md bg-secondary/60 border border-border">
+                      👥 {eventRsvps.length} van {e.max_participants} plekken
+                      {eventRsvps.length >= e.max_participants ? " · vol" : ""}
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap break-words">{e.description}</p>
                 {!isPast && e.rsvp_enabled && <RsvpBox event={e} rsvps={eventRsvps} />}
               </div>
