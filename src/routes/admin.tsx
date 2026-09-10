@@ -3,8 +3,17 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
-import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow, type EventRow } from "@/lib/queries";
+import {
+  adminLogin,
+  adminLogout,
+  adminStatus,
+  listAdmins,
+  createAdminUser,
+  changeAdminPassword,
+  deleteAdminUser,
+  type AdminUserRow,
+} from "@/lib/admin.functions";
 import {
   updateSettings,
   createEvent,
@@ -29,6 +38,7 @@ import {
   createPoll,
   setPollOpen,
   deletePoll,
+  updateEvent,
   type AdminRequestRow,
 } from "@/lib/site.functions";
 
@@ -120,7 +130,9 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "requests">("settings");
+  const [tab, setTab] = useState<
+    "settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "requests" | "admins"
+  >("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
@@ -129,6 +141,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id: "ranks" as const, label: "Ranks" },
     { id: "changelog" as const, label: "Changelog" },
     { id: "requests" as const, label: "Verzoeken" },
+    { id: "admins" as const, label: "Beheerders" },
   ];
 
   return (
@@ -164,6 +177,127 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "ranks" && <RanksPanel />}
       {tab === "changelog" && <ChangelogPanel />}
       {tab === "requests" && <RequestsPanel />}
+      {tab === "admins" && <AdminsPanel />}
+    </div>
+  );
+}
+
+function AdminsPanel() {
+  const load = useServerFn(listAdmins);
+  const createFn = useServerFn(createAdminUser);
+  const passFn = useServerFn(changeAdminPassword);
+  const delFn = useServerFn(deleteAdminUser);
+  const { data, refetch } = useQuery<AdminUserRow[]>({
+    queryKey: ["admin_users"],
+    queryFn: () => load() as Promise<AdminUserRow[]>,
+  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [newPass, setNewPass] = useState<Record<string, string>>({});
+
+  async function addAdmin(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setMsg(null);
+    try {
+      await createFn({ data: { username: username.trim(), password } });
+      setUsername("");
+      setPassword("");
+      setMsg("Beheerder aangemaakt.");
+      await refetch();
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : "Aanmaken mislukt");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <Panel title="Nieuwe beheerder">
+        <form onSubmit={addAdmin} className="grid gap-3 sm:grid-cols-2">
+          <Field label="Gebruikersnaam">
+            <input value={username} onChange={(e) => setUsername(e.target.value)} className={inputCls} required minLength={3} />
+          </Field>
+          <Field label="Wachtwoord (min. 8 tekens)">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={inputCls}
+              required
+              minLength={8}
+              autoComplete="new-password"
+            />
+          </Field>
+          <div className="sm:col-span-2 flex items-center gap-3">
+            <button type="submit" disabled={busy} className={btnCls}>
+              {busy ? "Bezig..." : "Beheerder toevoegen"}
+            </button>
+            {msg && <span className="text-sm text-muted-foreground">{msg}</span>}
+          </div>
+        </form>
+      </Panel>
+
+      <Panel title="Beheerders">
+        {(data ?? []).length === 0 && (
+          <p className="text-sm text-muted-foreground">Nog geen extra beheerders. Het hoofdaccount blijft altijd werken.</p>
+        )}
+        <div className="space-y-3">
+          {(data ?? []).map((a) => (
+            <div key={a.id} className="p-3 sm:p-4 rounded-lg bg-secondary/40 border border-border space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-medium break-words">{a.username}</span>
+                <span className="text-xs text-muted-foreground">{new Date(a.created_at).toLocaleDateString("nl-NL")}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="password"
+                  placeholder="Nieuw wachtwoord"
+                  value={newPass[a.id] ?? ""}
+                  onChange={(e) => setNewPass({ ...newPass, [a.id]: e.target.value })}
+                  className={inputCls + " sm:max-w-xs"}
+                  autoComplete="new-password"
+                />
+                <button
+                  onClick={async () => {
+                    const pw = newPass[a.id] ?? "";
+                    if (pw.length < 8) {
+                      setMsg("Wachtwoord moet minstens 8 tekens zijn");
+                      return;
+                    }
+                    try {
+                      await passFn({ data: { id: a.id, password: pw } });
+                      setNewPass({ ...newPass, [a.id]: "" });
+                      setMsg("Wachtwoord aangepast.");
+                    } catch (err) {
+                      setMsg(err instanceof Error ? err.message : "Aanpassen mislukt");
+                    }
+                  }}
+                  className="text-xs px-3 py-2 rounded-md border border-border hover:bg-secondary transition"
+                >
+                  Wachtwoord wijzigen
+                </button>
+                <button
+                  onClick={async () => {
+                    try {
+                      await delFn({ data: { id: a.id } });
+                      await refetch();
+                    } catch (err) {
+                      setMsg(err instanceof Error ? err.message : "Verwijderen mislukt");
+                    }
+                  }}
+                  className="text-xs px-3 py-2 rounded-md border border-destructive/50 text-destructive hover:bg-destructive/10 transition"
+                >
+                  Verwijderen
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Panel>
     </div>
   );
 }
