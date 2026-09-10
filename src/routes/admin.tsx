@@ -38,6 +38,7 @@ import {
   createPoll,
   setPollOpen,
   deletePoll,
+  updateEvent,
   type AdminRequestRow,
 } from "@/lib/site.functions";
 
