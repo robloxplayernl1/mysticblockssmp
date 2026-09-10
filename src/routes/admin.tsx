@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow, type EventRow } from "@/lib/queries";
 import {
   adminLogin,
   adminLogout,
