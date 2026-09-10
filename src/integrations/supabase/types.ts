@@ -308,6 +308,7 @@ export type Database = {
           opening_hours_enabled: boolean
           rules_text: string
           server_ip: string
+          server_paused: boolean
           updated_at: string
         }
         Insert: {
@@ -323,6 +324,7 @@ export type Database = {
           opening_hours_enabled?: boolean
           rules_text?: string
           server_ip?: string
+          server_paused?: boolean
           updated_at?: string
         }
         Update: {
@@ -338,6 +340,7 @@ export type Database = {
           opening_hours_enabled?: boolean
           rules_text?: string
           server_ip?: string
+          server_paused?: boolean
           updated_at?: string
         }
         Relationships: []
