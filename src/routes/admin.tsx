@@ -4,7 +4,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
 import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow } from "@/lib/queries";
-import { adminLogin, adminLogout, adminStatus } from "@/lib/admin.functions";
+import {
+  adminLogin,
+  adminLogout,
+  adminStatus,
+  listAdmins,
+  createAdminUser,
+  changeAdminPassword,
+  deleteAdminUser,
+  type AdminUserRow,
+} from "@/lib/admin.functions";
 import {
   updateSettings,
   createEvent,
