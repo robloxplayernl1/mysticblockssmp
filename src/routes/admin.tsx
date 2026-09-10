@@ -429,15 +429,6 @@ function SettingsPanel() {
           onChange={(e) => set({ opening_hours: e.target.value })}
         />
       </Field>
-      <label className="flex items-center gap-3 cursor-pointer">
-        <input
-          type="checkbox"
-          className="w-4 h-4 accent-primary"
-          checked={current.server_paused ?? false}
-          onChange={(e) => set({ server_paused: e.target.checked })}
-        />
-        <span className="text-sm font-medium">⏸️ Server gepauzeerd (status toont offline op de site)</span>
-      </label>
       <div className="p-4 rounded-xl border border-border bg-background/40 space-y-3">
         <label className="flex items-center gap-3 cursor-pointer">
           <input
