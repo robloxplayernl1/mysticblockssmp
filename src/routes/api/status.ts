@@ -36,7 +36,22 @@ export const Route = createFileRoute("/api/status")({
     handlers: {
       GET: async () => {
         const host = "mysticblockssmp.mcsh.io";
-        const java = await fetchStatus(`https://api.mcsrvstat.us/3/${host}`);
+        let paused = false;
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { data } = await supabaseAdmin
+            .from("site_settings")
+            .select("server_paused")
+            .eq("id", "main")
+            .maybeSingle();
+          paused = Boolean((data as { server_paused?: boolean } | null)?.server_paused);
+        } catch {
+          paused = false;
+        }
+        const fetched = await fetchStatus(`https://api.mcsrvstat.us/3/${host}`);
+        const java = paused
+          ? { online: false, players: { online: 0, max: 0 }, version: "", ping: null as number | null, motd: "Server gepauzeerd" }
+          : fetched;
         return new Response(JSON.stringify({ java: { ...java, checkedAt: new Date().toISOString() } }), {
           headers: {
             "content-type": "application/json",
