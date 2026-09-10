@@ -120,7 +120,9 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
-  const [tab, setTab] = useState<"settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "requests">("settings");
+  const [tab, setTab] = useState<
+    "settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "requests" | "admins"
+  >("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
     { id: "events" as const, label: "Events" },
@@ -129,6 +131,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id: "ranks" as const, label: "Ranks" },
     { id: "changelog" as const, label: "Changelog" },
     { id: "requests" as const, label: "Verzoeken" },
+    { id: "admins" as const, label: "Beheerders" },
   ];
 
   return (
