@@ -149,15 +149,14 @@ export const pollsQuery = queryOptions({
     const [p, o, v] = await Promise.all([
       supabase.from("polls" as never).select("id, question, description, is_open, created_at").order("created_at", { ascending: false }),
       supabase.from("poll_options" as never).select("id, poll_id, label, sort_order").order("sort_order", { ascending: true }),
-      supabase.from("poll_votes" as never).select("id, poll_id, option_id"),
+      listPublicVotes(),
     ]);
     if (p.error) throw p.error;
     if (o.error) throw o.error;
-    if (v.error) throw v.error;
     return {
       polls: (p.data ?? []) as unknown as PollRow[],
       options: (o.data ?? []) as unknown as PollOptionRow[],
-      votes: (v.data ?? []) as unknown as PollVoteRow[],
+      votes: v as PollVoteRow[],
     };
   },
 });
