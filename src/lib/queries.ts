@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { listPublicRsvps, listPublicVotes } from "./public-data.functions";
 
 export type SiteSettings = {
   hero_title: string;
