@@ -14,6 +14,8 @@ import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RanksRouteImport } from './routes/ranks'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PollsRouteImport } from './routes/polls'
+import { Route as HighlightsRouteImport } from './routes/highlights'
+import { Route as GalerijRouteImport } from './routes/galerij'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DataVerzoekRouteImport } from './routes/data-verzoek'
@@ -23,6 +25,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiStatusRouteImport } from './routes/api/status'
 import { Route as ApiPublicStaffAvatarPathRouteImport } from './routes/api/public/staff-avatar.$path'
+import { Route as ApiPublicGalleryImagePathRouteImport } from './routes/api/public/gallery-image.$path'
 
 const StaffRoute = StaffRouteImport.update({
   id: '/staff',
@@ -47,6 +50,16 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PollsRoute = PollsRouteImport.update({
   id: '/polls',
   path: '/polls',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HighlightsRoute = HighlightsRouteImport.update({
+  id: '/highlights',
+  path: '/highlights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalerijRoute = GalerijRouteImport.update({
+  id: '/galerij',
+  path: '/galerij',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -95,6 +108,12 @@ const ApiPublicStaffAvatarPathRoute =
     path: '/api/public/staff-avatar/$path',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicGalleryImagePathRoute =
+  ApiPublicGalleryImagePathRouteImport.update({
+    id: '/api/public/gallery-image/$path',
+    path: '/api/public/gallery-image/$path',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -104,12 +123,15 @@ export interface FileRoutesByFullPath {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/galerij': typeof GalerijRoute
+  '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
   '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRoutesByTo {
@@ -120,12 +142,15 @@ export interface FileRoutesByTo {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/galerij': typeof GalerijRoute
+  '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
   '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRoutesById {
@@ -137,12 +162,15 @@ export interface FileRoutesById {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/galerij': typeof GalerijRoute
+  '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
   '/privacy': typeof PrivacyRoute
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRouteTypes {
@@ -155,12 +183,15 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/galerij'
+    | '/highlights'
     | '/polls'
     | '/privacy'
     | '/ranks'
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -171,12 +202,15 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/galerij'
+    | '/highlights'
     | '/polls'
     | '/privacy'
     | '/ranks'
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   id:
     | '__root__'
@@ -187,12 +221,15 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/galerij'
+    | '/highlights'
     | '/polls'
     | '/privacy'
     | '/ranks'
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   fileRoutesById: FileRoutesById
 }
@@ -204,12 +241,15 @@ export interface RootRouteChildren {
   DataVerzoekRoute: typeof DataVerzoekRoute
   DisclaimerRoute: typeof DisclaimerRoute
   EventsRoute: typeof EventsRoute
+  GalerijRoute: typeof GalerijRoute
+  HighlightsRoute: typeof HighlightsRoute
   PollsRoute: typeof PollsRoute
   PrivacyRoute: typeof PrivacyRoute
   RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
   ApiStatusRoute: typeof ApiStatusRoute
+  ApiPublicGalleryImagePathRoute: typeof ApiPublicGalleryImagePathRoute
   ApiPublicStaffAvatarPathRoute: typeof ApiPublicStaffAvatarPathRoute
 }
 
@@ -248,6 +288,20 @@ declare module '@tanstack/react-router' {
       path: '/polls'
       fullPath: '/polls'
       preLoaderRoute: typeof PollsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/highlights': {
+      id: '/highlights'
+      path: '/highlights'
+      fullPath: '/highlights'
+      preLoaderRoute: typeof HighlightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galerij': {
+      id: '/galerij'
+      path: '/galerij'
+      fullPath: '/galerij'
+      preLoaderRoute: typeof GalerijRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -313,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicStaffAvatarPathRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/gallery-image/$path': {
+      id: '/api/public/gallery-image/$path'
+      path: '/api/public/gallery-image/$path'
+      fullPath: '/api/public/gallery-image/$path'
+      preLoaderRoute: typeof ApiPublicGalleryImagePathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -324,12 +385,15 @@ const rootRouteChildren: RootRouteChildren = {
   DataVerzoekRoute: DataVerzoekRoute,
   DisclaimerRoute: DisclaimerRoute,
   EventsRoute: EventsRoute,
+  GalerijRoute: GalerijRoute,
+  HighlightsRoute: HighlightsRoute,
   PollsRoute: PollsRoute,
   PrivacyRoute: PrivacyRoute,
   RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
   ApiStatusRoute: ApiStatusRoute,
+  ApiPublicGalleryImagePathRoute: ApiPublicGalleryImagePathRoute,
   ApiPublicStaffAvatarPathRoute: ApiPublicStaffAvatarPathRoute,
 }
 export const routeTree = rootRouteImport

@@ -166,6 +166,93 @@ export type Database = {
         }
         Relationships: []
       }
+      faq_items: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          question: string
+          sort_order: number
+        }
+        Insert: {
+          answer?: string
+          created_at?: string
+          id?: string
+          question?: string
+          sort_order?: number
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          question?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      gallery_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          sort_order?: number
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      highlights: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          is_active: boolean
+          period: string
+          player_name: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          period?: string
+          player_name?: string
+          sort_order?: number
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          period?: string
+          player_name?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
       poll_options: {
         Row: {
           created_at: string
