@@ -58,7 +58,7 @@ export const settingsQuery = queryOptions({
   queryFn: async (): Promise<SiteSettings> => {
     const { data, error } = await supabase
       .from("site_settings")
-      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, opening_hours, maintenance_enabled, maintenance_text, maintenance_pages, opening_hours_enabled, server_paused")
+      .select("hero_title, hero_subtitle, server_ip, discord_link, announcement, rules_text, opening_hours, maintenance_enabled, maintenance_text, maintenance_pages, opening_hours_enabled")
       .eq("id", "main")
       .maybeSingle();
     if (error) throw error;
@@ -75,7 +75,6 @@ export const settingsQuery = queryOptions({
         maintenance_text: "",
         maintenance_pages: [],
         opening_hours_enabled: true,
-        server_paused: false,
       }
     );
   },
