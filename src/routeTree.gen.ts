@@ -23,6 +23,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiStatusRouteImport } from './routes/api/status'
 import { Route as ApiPublicStaffAvatarPathRouteImport } from './routes/api/public/staff-avatar.$path'
+import { Route as ApiPublicGalleryImagePathRouteImport } from './routes/api/public/gallery-image.$path'
 
 const StaffRoute = StaffRouteImport.update({
   id: '/staff',
@@ -95,6 +96,12 @@ const ApiPublicStaffAvatarPathRoute =
     path: '/api/public/staff-avatar/$path',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicGalleryImagePathRoute =
+  ApiPublicGalleryImagePathRouteImport.update({
+    id: '/api/public/gallery-image/$path',
+    path: '/api/public/gallery-image/$path',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRoutesByTo {
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRoutesById {
@@ -143,6 +152,7 @@ export interface FileRoutesById {
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/api/status': typeof ApiStatusRoute
+  '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
 export interface FileRouteTypes {
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   id:
     | '__root__'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/staff'
     | '/api/status'
+    | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   fileRoutesById: FileRoutesById
 }
@@ -210,6 +223,7 @@ export interface RootRouteChildren {
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
   ApiStatusRoute: typeof ApiStatusRoute
+  ApiPublicGalleryImagePathRoute: typeof ApiPublicGalleryImagePathRoute
   ApiPublicStaffAvatarPathRoute: typeof ApiPublicStaffAvatarPathRoute
 }
 
@@ -313,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicStaffAvatarPathRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/gallery-image/$path': {
+      id: '/api/public/gallery-image/$path'
+      path: '/api/public/gallery-image/$path'
+      fullPath: '/api/public/gallery-image/$path'
+      preLoaderRoute: typeof ApiPublicGalleryImagePathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -330,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
   ApiStatusRoute: ApiStatusRoute,
+  ApiPublicGalleryImagePathRoute: ApiPublicGalleryImagePathRoute,
   ApiPublicStaffAvatarPathRoute: ApiPublicStaffAvatarPathRoute,
 }
 export const routeTree = rootRouteImport
