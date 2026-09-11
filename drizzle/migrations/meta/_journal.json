@@ -36,6 +36,13 @@
       "when": 1789134062830,
       "tag": "0004_restrict_rsvp_and_vote_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789134602647,
+      "tag": "0005_gallery_highlights_faq",
+      "breakpoints": true
     }
   ]
 }
