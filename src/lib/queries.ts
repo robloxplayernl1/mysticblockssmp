@@ -14,7 +14,6 @@ export type SiteSettings = {
   maintenance_text: string;
   maintenance_pages: string[];
   opening_hours_enabled: boolean;
-  server_paused: boolean;
 };
 
 export type ChangelogRow = {
