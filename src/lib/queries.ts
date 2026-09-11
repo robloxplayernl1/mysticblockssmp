@@ -134,12 +134,7 @@ export type RsvpRow = { id: string; event_id: string; minecraft_name: string; cr
 export const rsvpsQuery = queryOptions({
   queryKey: ["event_rsvps"],
   queryFn: async (): Promise<RsvpRow[]> => {
-    const { data, error } = await supabase
-      .from("event_rsvps" as never)
-      .select("id, event_id, minecraft_name, created_at")
-      .order("created_at", { ascending: true });
-    if (error) throw error;
-    return (data ?? []) as unknown as RsvpRow[];
+    return (await listPublicRsvps()) as RsvpRow[];
   },
 });
 
