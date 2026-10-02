@@ -10,10 +10,10 @@ import { getBrowserToken } from "@/lib/browser-token";
 export const Route = createFileRoute("/polls")({
   head: () => ({
     meta: [
-      { title: "Polls · MysticBlocksSMP" },
-      { name: "description", content: "Stem mee over de toekomst van MysticBlocksSMP en bekijk direct de uitslag." },
-      { property: "og:title", content: "Polls · MysticBlocksSMP" },
-      { property: "og:description", content: "Stem mee over de toekomst van MysticBlocksSMP en bekijk direct de uitslag." },
+      { title: "Polls · BlokCraft" },
+      { name: "description", content: "Stem mee over de toekomst van BlokCraft en bekijk direct de uitslag." },
+      { property: "og:title", content: "Polls · BlokCraft" },
+      { property: "og:description", content: "Stem mee over de toekomst van BlokCraft en bekijk direct de uitslag." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

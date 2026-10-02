@@ -6,10 +6,10 @@ import { changelogQuery } from "@/lib/queries";
 export const Route = createFileRoute("/changelog")({
   head: () => ({
     meta: [
-      { title: "Changelog · MysticBlocksSMP" },
-      { name: "description", content: "Alle updates en wijzigingen op de MysticBlocksSMP Minecraft server, op datum gesorteerd." },
-      { property: "og:title", content: "Changelog · MysticBlocksSMP" },
-      { property: "og:description", content: "Alle updates en wijzigingen op de MysticBlocksSMP Minecraft server." },
+      { title: "Changelog · BlokCraft" },
+      { name: "description", content: "Alle updates en wijzigingen op de BlokCraft Minecraft server, op datum gesorteerd." },
+      { property: "og:title", content: "Changelog · BlokCraft" },
+      { property: "og:description", content: "Alle updates en wijzigingen op de BlokCraft Minecraft server." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

@@ -63,45 +63,45 @@
 
 :root {
   --radius: 0.625rem;
-  /* MysticBlocksSMP mystic purple theme */
-  --background: oklch(0.13 0.05 290);
-  --foreground: oklch(0.96 0.02 300);
-  --card: oklch(0.18 0.07 285);
-  --card-foreground: oklch(0.96 0.02 300);
-  --popover: oklch(0.18 0.07 285);
-  --popover-foreground: oklch(0.96 0.02 300);
-  --primary: oklch(0.68 0.22 305);
-  --primary-foreground: oklch(0.1 0.05 290);
-  --secondary: oklch(0.24 0.08 285);
-  --secondary-foreground: oklch(0.96 0.02 300);
-  --muted: oklch(0.22 0.06 285);
-  --muted-foreground: oklch(0.75 0.05 300);
-  --accent: oklch(0.55 0.25 300);
-  --accent-foreground: oklch(0.98 0.02 300);
+  /* BlokCraft: charcoal stone, sunset gold, warm amber and landscape green */
+  --background: oklch(0.14 0.016 74);
+  --foreground: oklch(0.96 0.02 88);
+  --card: oklch(0.2 0.018 72);
+  --card-foreground: oklch(0.96 0.02 88);
+  --popover: oklch(0.2 0.018 72);
+  --popover-foreground: oklch(0.96 0.02 88);
+  --primary: oklch(0.78 0.16 78);
+  --primary-foreground: oklch(0.17 0.025 65);
+  --secondary: oklch(0.26 0.035 63);
+  --secondary-foreground: oklch(0.96 0.02 88);
+  --muted: oklch(0.25 0.018 72);
+  --muted-foreground: oklch(0.76 0.025 84);
+  --accent: oklch(0.65 0.18 50);
+  --accent-foreground: oklch(0.99 0.01 90);
   --destructive: oklch(0.6 0.24 25);
-  --destructive-foreground: oklch(0.98 0.02 300);
-  --border: oklch(0.28 0.08 290 / 60%);
-  --input: oklch(0.24 0.08 285);
-  --ring: oklch(0.68 0.22 305);
+  --destructive-foreground: oklch(0.98 0.02 90);
+  --border: oklch(0.4 0.04 74 / 65%);
+  --input: oklch(0.26 0.025 72);
+  --ring: oklch(0.78 0.16 78);
 
-  --glow-primary: oklch(0.75 0.25 305);
-  --gradient-mystic: linear-gradient(135deg, oklch(0.13 0.05 290) 0%, oklch(0.22 0.12 290) 50%, oklch(0.32 0.18 305) 100%);
-  --gradient-hero: radial-gradient(ellipse at top, oklch(0.35 0.2 305 / 40%), transparent 60%), linear-gradient(180deg, oklch(0.13 0.05 290), oklch(0.09 0.04 285));
-  --shadow-glow: 0 0 40px oklch(0.68 0.22 305 / 40%);
-  --shadow-elegant: 0 20px 60px -20px oklch(0.42 0.2 305 / 40%);
+  --glow-primary: oklch(0.86 0.16 85);
+  --gradient-mystic: linear-gradient(135deg, oklch(0.14 0.016 74), oklch(0.25 0.045 60));
+  --gradient-hero: linear-gradient(180deg, oklch(0.2 0.032 62), oklch(0.14 0.016 74));
+  --shadow-glow: 0 0 30px oklch(0.78 0.16 78 / 25%);
+  --shadow-elegant: 0 18px 45px -20px oklch(0.07 0.015 70 / 70%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.15 0.06 288);
-  --sidebar-foreground: oklch(0.96 0.02 300);
-  --sidebar-primary: oklch(0.68 0.22 305);
-  --sidebar-primary-foreground: oklch(0.1 0.05 290);
-  --sidebar-accent: oklch(0.22 0.08 285);
-  --sidebar-accent-foreground: oklch(0.96 0.02 300);
-  --sidebar-border: oklch(0.28 0.08 290 / 60%);
-  --sidebar-ring: oklch(0.68 0.22 305);
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 .dark {
@@ -151,7 +151,7 @@
   }
   h1, h2, h3, h4 {
     font-family: "Cinzel", "Trajan Pro", Georgia, serif;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
   }
 }
 
@@ -162,7 +162,7 @@
   background: var(--gradient-hero);
 }
 @utility text-glow {
-  text-shadow: 0 0 20px oklch(0.75 0.25 305 / 70%), 0 0 40px oklch(0.55 0.25 300 / 40%);
+  text-shadow: 0 0 24px oklch(0.78 0.16 78 / 45%);
 }
 @utility shadow-glow {
   box-shadow: var(--shadow-glow);

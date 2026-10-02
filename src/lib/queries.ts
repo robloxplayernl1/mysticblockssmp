@@ -64,7 +64,7 @@ export const settingsQuery = queryOptions({
     if (error) throw error;
     return (
       (data as unknown as SiteSettings) ?? {
-        hero_title: "MysticBlocksSMP",
+        hero_title: "BlokCraft",
         hero_subtitle: "",
         server_ip: "mysticblockssmp.mcsh.io",
         discord_link: "https://discord.gg/Y4BchzeFJH",
@@ -159,25 +159,33 @@ export const pollsQuery = queryOptions({
   },
 });
 
-export type ServerStatus = {
-  java: {
-    online: boolean;
-    players: { online: number; max: number };
-    version: string;
-    ping: number | null;
-    motd: string;
-    checkedAt: string;
-  };
-};
+export type GalleryItem = { id: string; title: string; description: string; image_url: string; sort_order: number };
+export type Highlight = { id: string; title: string; player_name: string; description: string; image_url: string; period: string; is_active: boolean; sort_order: number };
+export type FaqItem = { id: string; question: string; answer: string; sort_order: number };
 
-export const statusQuery = queryOptions({
-  queryKey: ["server_status"],
-  queryFn: async (): Promise<ServerStatus> => {
-    const res = await fetch(`/api/status?t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error("status fetch failed");
-    return (await res.json()) as ServerStatus;
+export const galleryQuery = queryOptions({
+  queryKey: ["gallery_items"],
+  queryFn: async (): Promise<GalleryItem[]> => {
+    const { data, error } = await supabase.from("gallery_items").select("id,title,description,image_url,sort_order").order("sort_order");
+    if (error) throw error;
+    return data ?? [];
   },
-  refetchInterval: 30_000,
-  staleTime: 0,
-  gcTime: 60_000,
+});
+
+export const highlightsQuery = queryOptions({
+  queryKey: ["highlights"],
+  queryFn: async (): Promise<Highlight[]> => {
+    const { data, error } = await supabase.from("highlights").select("id,title,player_name,description,image_url,period,is_active,sort_order").order("sort_order");
+    if (error) throw error;
+    return data ?? [];
+  },
+});
+
+export const faqQuery = queryOptions({
+  queryKey: ["faq_items"],
+  queryFn: async (): Promise<FaqItem[]> => {
+    const { data, error } = await supabase.from("faq_items").select("id,question,answer,sort_order").order("sort_order");
+    if (error) throw error;
+    return data ?? [];
+  },
 });

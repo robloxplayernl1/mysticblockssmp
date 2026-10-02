@@ -16,6 +16,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PollsRouteImport } from './routes/polls'
 import { Route as HighlightsRouteImport } from './routes/highlights'
 import { Route as GalerijRouteImport } from './routes/galerij'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DataVerzoekRouteImport } from './routes/data-verzoek'
@@ -23,7 +24,6 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiStatusRouteImport } from './routes/api/status'
 import { Route as ApiPublicStaffAvatarPathRouteImport } from './routes/api/public/staff-avatar.$path'
 import { Route as ApiPublicGalleryImagePathRouteImport } from './routes/api/public/gallery-image.$path'
 
@@ -62,6 +62,11 @@ const GalerijRoute = GalerijRouteImport.update({
   path: '/galerij',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
@@ -97,11 +102,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiStatusRoute = ApiStatusRouteImport.update({
-  id: '/api/status',
-  path: '/api/status',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicStaffAvatarPathRoute =
   ApiPublicStaffAvatarPathRouteImport.update({
     id: '/api/public/staff-avatar/$path',
@@ -123,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/faq': typeof FaqRoute
   '/galerij': typeof GalerijRoute
   '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
@@ -130,7 +131,6 @@ export interface FileRoutesByFullPath {
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
-  '/api/status': typeof ApiStatusRoute
   '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
@@ -142,6 +142,7 @@ export interface FileRoutesByTo {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/faq': typeof FaqRoute
   '/galerij': typeof GalerijRoute
   '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
@@ -149,7 +150,6 @@ export interface FileRoutesByTo {
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
-  '/api/status': typeof ApiStatusRoute
   '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
@@ -162,6 +162,7 @@ export interface FileRoutesById {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/faq': typeof FaqRoute
   '/galerij': typeof GalerijRoute
   '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
@@ -169,7 +170,6 @@ export interface FileRoutesById {
   '/ranks': typeof RanksRoute
   '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
-  '/api/status': typeof ApiStatusRoute
   '/api/public/gallery-image/$path': typeof ApiPublicGalleryImagePathRoute
   '/api/public/staff-avatar/$path': typeof ApiPublicStaffAvatarPathRoute
 }
@@ -183,6 +183,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/faq'
     | '/galerij'
     | '/highlights'
     | '/polls'
@@ -190,7 +191,6 @@ export interface FileRouteTypes {
     | '/ranks'
     | '/rules'
     | '/staff'
-    | '/api/status'
     | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   fileRoutesByTo: FileRoutesByTo
@@ -202,6 +202,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/faq'
     | '/galerij'
     | '/highlights'
     | '/polls'
@@ -209,7 +210,6 @@ export interface FileRouteTypes {
     | '/ranks'
     | '/rules'
     | '/staff'
-    | '/api/status'
     | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   id:
@@ -221,6 +221,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/faq'
     | '/galerij'
     | '/highlights'
     | '/polls'
@@ -228,7 +229,6 @@ export interface FileRouteTypes {
     | '/ranks'
     | '/rules'
     | '/staff'
-    | '/api/status'
     | '/api/public/gallery-image/$path'
     | '/api/public/staff-avatar/$path'
   fileRoutesById: FileRoutesById
@@ -241,6 +241,7 @@ export interface RootRouteChildren {
   DataVerzoekRoute: typeof DataVerzoekRoute
   DisclaimerRoute: typeof DisclaimerRoute
   EventsRoute: typeof EventsRoute
+  FaqRoute: typeof FaqRoute
   GalerijRoute: typeof GalerijRoute
   HighlightsRoute: typeof HighlightsRoute
   PollsRoute: typeof PollsRoute
@@ -248,7 +249,6 @@ export interface RootRouteChildren {
   RanksRoute: typeof RanksRoute
   RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
-  ApiStatusRoute: typeof ApiStatusRoute
   ApiPublicGalleryImagePathRoute: typeof ApiPublicGalleryImagePathRoute
   ApiPublicStaffAvatarPathRoute: typeof ApiPublicStaffAvatarPathRoute
 }
@@ -304,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalerijRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events': {
       id: '/events'
       path: '/events'
@@ -353,13 +360,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/status': {
-      id: '/api/status'
-      path: '/api/status'
-      fullPath: '/api/status'
-      preLoaderRoute: typeof ApiStatusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/staff-avatar/$path': {
       id: '/api/public/staff-avatar/$path'
       path: '/api/public/staff-avatar/$path'
@@ -385,6 +385,7 @@ const rootRouteChildren: RootRouteChildren = {
   DataVerzoekRoute: DataVerzoekRoute,
   DisclaimerRoute: DisclaimerRoute,
   EventsRoute: EventsRoute,
+  FaqRoute: FaqRoute,
   GalerijRoute: GalerijRoute,
   HighlightsRoute: HighlightsRoute,
   PollsRoute: PollsRoute,
@@ -392,7 +393,6 @@ const rootRouteChildren: RootRouteChildren = {
   RanksRoute: RanksRoute,
   RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
-  ApiStatusRoute: ApiStatusRoute,
   ApiPublicGalleryImagePathRoute: ApiPublicGalleryImagePathRoute,
   ApiPublicStaffAvatarPathRoute: ApiPublicStaffAvatarPathRoute,
 }

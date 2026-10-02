@@ -2,9 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site-layout";
 import { RequestForm } from "@/components/request-form";
 
-const title = "Datavezoek indienen · MysticBlocksSMP";
+const title = "Datavezoek indienen · BlokCraft";
 const description =
-  "Vraag inzage, verwijdering of een export van je persoonsgegevens aan bij MysticBlocksSMP. Wij reageren binnen 30 dagen.";
+  "Vraag inzage, verwijdering of een export van je persoonsgegevens aan bij BlokCraft. Wij reageren binnen 30 dagen.";
 
 export const Route = createFileRoute("/data-verzoek")({
   head: () => ({

@@ -6,10 +6,10 @@ import { staffQuery } from "@/lib/queries";
 export const Route = createFileRoute("/staff")({
   head: () => ({
     meta: [
-      { title: "Staff · MysticBlocksSMP" },
-      { name: "description", content: "Maak kennis met het staff team van MysticBlocksSMP." },
-      { property: "og:title", content: "Staff · MysticBlocksSMP" },
-      { property: "og:description", content: "Het staff team van MysticBlocksSMP." },
+      { title: "Staff · BlokCraft" },
+      { name: "description", content: "Maak kennis met het staff team van BlokCraft." },
+      { property: "og:title", content: "Staff · BlokCraft" },
+      { property: "og:description", content: "Het staff team van BlokCraft." },
     ],
   }),
   component: StaffPage,
@@ -22,7 +22,7 @@ function StaffPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-20">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-glow mb-4 text-center">Ons Team</h1>
         <p className="text-center text-sm sm:text-base text-muted-foreground mb-8 sm:mb-12">
-          De mensen die MysticBlocksSMP draaiende houden.
+          De mensen die BlokCraft draaiende houden.
         </p>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {staff?.map((s) => (

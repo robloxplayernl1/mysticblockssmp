@@ -4,10 +4,10 @@ import { SiteLayout } from "@/components/site-layout";
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
     meta: [
-      { title: "Disclaimer · MysticBlocksSMP" },
-      { name: "description", content: "Disclaimer en juridische mededelingen voor MysticBlocksSMP." },
-      { property: "og:title", content: "Disclaimer · MysticBlocksSMP" },
-      { property: "og:description", content: "Disclaimer en juridische mededelingen voor MysticBlocksSMP." },
+      { title: "Disclaimer · BlokCraft" },
+      { name: "description", content: "Disclaimer en juridische mededelingen voor BlokCraft." },
+      { property: "og:title", content: "Disclaimer · BlokCraft" },
+      { property: "og:description", content: "Disclaimer en juridische mededelingen voor BlokCraft." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://mysticblockssmp.lovable.app/disclaimer" },
     ],
@@ -29,7 +29,7 @@ function DisclaimerPage() {
           <section className="p-5 sm:p-8 rounded-2xl bg-card border border-border shadow-elegant">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3">Onafhankelijkheid</h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              MysticBlocksSMP is een onafhankelijke communityserver en is niet gelieerd aan, goedgekeurd door of 
+              BlokCraft is een onafhankelijke communityserver en is niet gelieerd aan, goedgekeurd door of 
               gesponsord door Mojang Studios of Microsoft Corporation. Minecraft is een handelsmerk van 
               Mojang Studios, een dochteronderneming van Microsoft Corporation. Alle gerelateerde merken en 
               handelsmerken zijn eigendom van hun respectieve eigenaren.
@@ -40,7 +40,7 @@ function DisclaimerPage() {
             <h2 className="text-xl sm:text-2xl font-semibold mb-3">Gebruik van de website</h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               De informatie op deze website wordt met zorg samengesteld, maar kan zonder voorafgaande kennisgeving 
-              worden gewijzigd. We doen ons best om de serverstatus, evenementen en andere informatie actueel te 
+              worden gewijzigd. We doen ons best om evenementen en andere informatie actueel te 
               houden, maar kunnen niet garanderen dat alle gegevens te allen tijd correct of volledig zijn.
             </p>
           </section>
@@ -48,7 +48,7 @@ function DisclaimerPage() {
           <section className="p-5 sm:p-8 rounded-2xl bg-card border border-border shadow-elegant">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3">Beschikbaarheid</h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              De MysticBlocksSMP server en website worden aangeboden zoals ze zijn. We kunnen geen garantie geven 
+              De BlokCraft server en website worden aangeboden zoals ze zijn. We kunnen geen garantie geven 
               over continue beschikbaarheid, foutloze werking of het behoud van data zoals builds, items of 
               speelvoortgang. Onderhoud, updates of technische storingen kunnen leiden tot onderbrekingen.
             </p>

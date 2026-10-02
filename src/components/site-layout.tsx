@@ -2,6 +2,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { settingsQuery } from "@/lib/queries";
 import type { ReactNode } from "react";
+import logoAsset from "@/assets/BlokCraft.png.asset.json";
+import { Button } from "@/components/ui/button";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -9,6 +11,9 @@ const nav = [
   { to: "/ranks", label: "Ranks" },
   { to: "/rules", label: "Regels" },
   { to: "/staff", label: "Staff" },
+  { to: "/galerij", label: "Galerij" },
+  { to: "/highlights", label: "Highlights" },
+  { to: "/faq", label: "FAQ" },
   { to: "/polls", label: "Peilingen" },
   { to: "/changelog", label: "Changelog" },
   { to: "/contact", label: "Contact" },
@@ -47,10 +52,8 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/70 border-b border-border">
         <div className="max-w-6xl mx-auto grid grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 md:gap-4 px-4 sm:px-6 py-3 sm:py-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 group">
-            <span className="shrink-0 text-xl sm:text-2xl">🔮</span>
-            <span className="truncate font-semibold tracking-wide text-base sm:text-lg text-glow group-hover:text-primary transition-colors">
-              MysticBlocks<span className="text-primary">SMP</span>
-            </span>
+            <img src={logoAsset.url} alt="" className="h-9 w-9 sm:h-10 sm:w-10 rounded-md object-cover border border-primary/40" />
+            <span className="truncate font-semibold text-base sm:text-lg text-glow group-hover:text-primary transition-colors">BlokCraft</span>
           </Link>
           <nav className="hidden md:flex items-center gap-1 justify-self-end">
             {nav.map((n) => (
@@ -64,14 +67,16 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
               </Link>
             ))}
           </nav>
+          <Button asChild>
           <a
             href={settings?.discord_link ?? "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-2 rounded-md bg-primary px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-primary-foreground hover:opacity-90 transition shadow-glow"
+            className="shrink-0 shadow-glow"
           >
             Discord
           </a>
+          </Button>
         </div>
         <nav className="md:hidden flex overflow-x-auto gap-1 px-3 pb-2 pt-1 border-t border-border/50 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {nav.map((n) => (
@@ -88,7 +93,7 @@ export function SiteLayout({ children, bypassMaintenance }: { children: ReactNod
       </header>
       <main>{children}</main>
       <footer className="border-t border-border mt-24 py-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} MysticBlocksSMP · Niet aangesloten bij Mojang of Microsoft</p>
+        <p>© {new Date().getFullYear()} BlokCraft · Niet aangesloten bij Mojang of Microsoft</p>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground/70">
           <Link to="/privacy" className="hover:text-primary transition-colors">
             Privacyverklaring
