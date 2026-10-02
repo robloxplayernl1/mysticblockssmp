@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
 import { settingsQuery, eventsQuery } from "@/lib/queries";
-import { ServerStatus, ServerStatusWidget } from "@/components/server-status";
+import logoAsset from "@/assets/BlokCraft.png.asset.json";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,6 +17,8 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "BlokCraft · Magische Minecraft SMP Server" },
       { property: "og:description", content: "Sluit je aan bij BlokCraft, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -44,16 +47,12 @@ function Index() {
 
   return (
     <SiteLayout>
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/20 blur-3xl" />
-        </div>
-        <div className="relative max-w-5xl mx-auto text-center px-4 sm:px-6 pt-14 pb-20 sm:pt-24 sm:pb-32">
-          <div className="mb-6 flex justify-center">
-            <ServerStatus />
-          </div>
-          <h1 className="text-[2rem] leading-tight break-words sm:text-5xl md:text-7xl font-bold tracking-tight text-glow mb-6">
-            {settings?.hero_title ?? "BlokCraft"}
+      <section className="relative overflow-hidden min-h-[690px] sm:min-h-[720px] flex items-end bg-card">
+        <img src={logoAsset.url} alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-transparent" />
+        <div className="relative w-full max-w-5xl mx-auto text-center px-4 sm:px-6 pt-40 pb-14 sm:pb-20">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-glow mb-5">
+            BlokCraft
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10">
             {settings?.hero_subtitle ?? "Een magische Minecraft SMP wereld vol avontuur"}
@@ -63,12 +62,12 @@ function Index() {
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Server IP</p>
               <p className="text-sm sm:text-lg font-mono text-primary break-all">{ip}</p>
             </div>
-            <button
+            <Button
               onClick={() => copy(ip, "ip")}
-              className="shrink-0 px-5 sm:px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-glow"
+              className="shrink-0 px-5 sm:px-6 py-3 h-auto shadow-glow"
             >
               {copied === "ip" ? "Gekopieerd ✓" : "Kopieer IP"}
-            </button>
+            </Button>
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
             Ondersteunt Java Edition én Bedrock (crossplay)
@@ -82,9 +81,6 @@ function Index() {
             >
               💬 Join Discord
             </a>
-          </div>
-          <div className="mt-10 max-w-2xl mx-auto text-left">
-            <ServerStatusWidget />
           </div>
         </div>
       </section>
