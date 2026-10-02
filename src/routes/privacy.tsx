@@ -4,10 +4,10 @@ import { SiteLayout } from "@/components/site-layout";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacyverklaring · MysticBlocksSMP" },
-      { name: "description", content: "Lees hoe MysticBlocksSMP omgaat met jouw gegevens, cookies en contactgegevens." },
-      { property: "og:title", content: "Privacyverklaring · MysticBlocksSMP" },
-      { property: "og:description", content: "Lees hoe MysticBlocksSMP omgaat met jouw gegevens, cookies en contactgegevens." },
+      { title: "Privacyverklaring · BlokCraft" },
+      { name: "description", content: "Lees hoe BlokCraft omgaat met jouw gegevens, cookies en contactgegevens." },
+      { property: "og:title", content: "Privacyverklaring · BlokCraft" },
+      { property: "og:description", content: "Lees hoe BlokCraft omgaat met jouw gegevens, cookies en contactgegevens." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://mysticblockssmp.lovable.app/privacy" },
     ],
@@ -29,7 +29,7 @@ function PrivacyPage() {
           <section className="p-5 sm:p-8 rounded-2xl bg-card border border-border shadow-elegant">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3">1. Welke gegevens verzamelen we?</h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              MysticBlocksSMP verzamelt alleen gegevens die je zelf met ons deelt, bijvoorbeeld via Discord of e-mail. 
+              BlokCraft verzamelt alleen gegevens die je zelf met ons deelt, bijvoorbeeld via Discord of e-mail. 
               Wanneer je onze website bezoekt, kunnen er standaard serverlogs worden bijgehouden zoals je IP-adres, 
               browsertype en bezochte pagina&apos;s. Deze logs gebruiken we uitsluitend voor technisch beheer en 
               het oplossen van problemen.

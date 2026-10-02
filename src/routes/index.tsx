@@ -8,14 +8,14 @@ import { ServerStatus, ServerStatusWidget } from "@/components/server-status";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MysticBlocksSMP · Magische Minecraft SMP Server" },
+      { title: "BlokCraft · Magische Minecraft SMP Server" },
       {
         name: "description",
         content:
-          "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!",
+          "Sluit je aan bij BlokCraft, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!",
       },
-      { property: "og:title", content: "MysticBlocksSMP · Magische Minecraft SMP Server" },
-      { property: "og:description", content: "Sluit je aan bij MysticBlocksSMP, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
+      { property: "og:title", content: "BlokCraft · Magische Minecraft SMP Server" },
+      { property: "og:description", content: "Sluit je aan bij BlokCraft, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
     ],
   }),
   component: Index,
@@ -53,7 +53,7 @@ function Index() {
             <ServerStatus />
           </div>
           <h1 className="text-[2rem] leading-tight break-words sm:text-5xl md:text-7xl font-bold tracking-tight text-glow mb-6">
-            {settings?.hero_title ?? "MysticBlocksSMP"}
+            {settings?.hero_title ?? "BlokCraft"}
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10">
             {settings?.hero_subtitle ?? "Een magische Minecraft SMP wereld vol avontuur"}

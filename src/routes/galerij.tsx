@@ -6,10 +6,10 @@ import { galleryQuery } from "@/lib/queries";
 export const Route = createFileRoute("/galerij")({
   head: () => ({
     meta: [
-      { title: "Galerij · MysticBlocksSMP" },
-      { name: "description", content: "Screenshots en bouwwerken van spelers op de MysticBlocksSMP Minecraft server." },
-      { property: "og:title", content: "Galerij · MysticBlocksSMP" },
-      { property: "og:description", content: "Screenshots en bouwwerken van spelers op de MysticBlocksSMP Minecraft server." },
+      { title: "Galerij · BlokCraft" },
+      { name: "description", content: "Screenshots en bouwwerken van spelers op de BlokCraft Minecraft server." },
+      { property: "og:title", content: "Galerij · BlokCraft" },
+      { property: "og:description", content: "Screenshots en bouwwerken van spelers op de BlokCraft Minecraft server." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -39,7 +39,7 @@ function GalleryPage() {
                 {item.image_url ? (
                   <img
                     src={item.image_url}
-                    alt={item.title || "Screenshot van MysticBlocksSMP"}
+                    alt={item.title || "Screenshot van BlokCraft"}
                     loading="lazy"
                     className="w-full h-48 object-cover"
                   />

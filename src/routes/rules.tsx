@@ -6,10 +6,10 @@ import { settingsQuery } from "@/lib/queries";
 export const Route = createFileRoute("/rules")({
   head: () => ({
     meta: [
-      { title: "Regels · MysticBlocksSMP" },
-      { name: "description", content: "De regels van MysticBlocksSMP. Lees ze door voordat je speelt." },
-      { property: "og:title", content: "Regels · MysticBlocksSMP" },
-      { property: "og:description", content: "De regels van MysticBlocksSMP." },
+      { title: "Regels · BlokCraft" },
+      { name: "description", content: "De regels van BlokCraft. Lees ze door voordat je speelt." },
+      { property: "og:title", content: "Regels · BlokCraft" },
+      { property: "og:description", content: "De regels van BlokCraft." },
     ],
   }),
   component: RulesPage,

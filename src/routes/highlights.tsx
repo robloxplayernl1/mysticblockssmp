@@ -6,10 +6,10 @@ import { highlightsQuery } from "@/lib/queries";
 export const Route = createFileRoute("/highlights")({
   head: () => ({
     meta: [
-      { title: "Highlights · MysticBlocksSMP" },
-      { name: "description", content: "Speler-highlights en het bouwwerk van de maand op de MysticBlocksSMP server." },
-      { property: "og:title", content: "Highlights · MysticBlocksSMP" },
-      { property: "og:description", content: "Speler-highlights en het bouwwerk van de maand op de MysticBlocksSMP server." },
+      { title: "Highlights · BlokCraft" },
+      { name: "description", content: "Speler-highlights en het bouwwerk van de maand op de BlokCraft server." },
+      { property: "og:title", content: "Highlights · BlokCraft" },
+      { property: "og:description", content: "Speler-highlights en het bouwwerk van de maand op de BlokCraft server." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

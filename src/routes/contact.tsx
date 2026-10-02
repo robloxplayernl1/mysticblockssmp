@@ -4,9 +4,9 @@ import { SiteLayout } from "@/components/site-layout";
 import { RequestForm } from "@/components/request-form";
 import { settingsQuery } from "@/lib/queries";
 
-const title = "Contact · MysticBlocksSMP";
+const title = "Contact · BlokCraft";
 const description =
-  "Neem contact op met het team van MysticBlocksSMP via Discord of het contactformulier. Vragen, meldingen en samenwerkingen.";
+  "Neem contact op met het team van BlokCraft via Discord of het contactformulier. Vragen, meldingen en samenwerkingen.";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({

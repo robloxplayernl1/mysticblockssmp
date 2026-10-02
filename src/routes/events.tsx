@@ -10,10 +10,10 @@ import { getBrowserToken } from "@/lib/browser-token";
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events · MysticBlocksSMP" },
-      { name: "description", content: "Bekijk alle aankomende evenementen op MysticBlocksSMP en meld je direct aan." },
-      { property: "og:title", content: "Events · MysticBlocksSMP" },
-      { property: "og:description", content: "Alle aankomende evenementen op MysticBlocksSMP, met aanmelden." },
+      { title: "Events · BlokCraft" },
+      { name: "description", content: "Bekijk alle aankomende evenementen op BlokCraft en meld je direct aan." },
+      { property: "og:title", content: "Events · BlokCraft" },
+      { property: "og:description", content: "Alle aankomende evenementen op BlokCraft, met aanmelden." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

@@ -6,14 +6,14 @@ import { ranksQuery } from "@/lib/queries";
 export const Route = createFileRoute("/ranks")({
   head: () => ({
     meta: [
-      { title: "Ranks · MysticBlocksSMP" },
+      { title: "Ranks · BlokCraft" },
       {
         name: "description",
         content:
-          "Ranks op MysticBlocksSMP verdien je door speeltijd — geen webshop. Bekijk hoe je elke rank kunt behalen.",
+          "Ranks op BlokCraft verdien je door speeltijd — geen webshop. Bekijk hoe je elke rank kunt behalen.",
       },
-      { property: "og:title", content: "Ranks · MysticBlocksSMP" },
-      { property: "og:description", content: "Verdien ranks door te spelen op MysticBlocksSMP." },
+      { property: "og:title", content: "Ranks · BlokCraft" },
+      { property: "og:description", content: "Verdien ranks door te spelen op BlokCraft." },
     ],
   }),
   component: RanksPage,

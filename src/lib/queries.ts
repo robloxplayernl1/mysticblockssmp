@@ -64,7 +64,7 @@ export const settingsQuery = queryOptions({
     if (error) throw error;
     return (
       (data as unknown as SiteSettings) ?? {
-        hero_title: "MysticBlocksSMP",
+        hero_title: "BlokCraft",
         hero_subtitle: "",
         server_ip: "mysticblockssmp.mcsh.io",
         discord_link: "https://discord.gg/Y4BchzeFJH",

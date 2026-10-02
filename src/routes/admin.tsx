@@ -45,8 +45,8 @@ import {
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin · MysticBlocksSMP" },
-      { name: "description", content: "Admin panel voor MysticBlocksSMP." },
+      { title: "Admin · BlokCraft" },
+      { name: "description", content: "Admin panel voor BlokCraft." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
