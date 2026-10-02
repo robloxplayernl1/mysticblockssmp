@@ -40,7 +40,7 @@ function DisclaimerPage() {
             <h2 className="text-xl sm:text-2xl font-semibold mb-3">Gebruik van de website</h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               De informatie op deze website wordt met zorg samengesteld, maar kan zonder voorafgaande kennisgeving 
-              worden gewijzigd. We doen ons best om de serverstatus, evenementen en andere informatie actueel te 
+              worden gewijzigd. We doen ons best om evenementen en andere informatie actueel te 
               houden, maar kunnen niet garanderen dat alle gegevens te allen tijd correct of volledig zijn.
             </p>
           </section>

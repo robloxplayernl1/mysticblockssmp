@@ -77,15 +77,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BlokCraft · Magische Minecraft SMP Server" },
-      { name: "description", content: "Sluit je aan bij BlokCraft, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
       { name: "author", content: "BlokCraft" },
-      { property: "og:title", content: "BlokCraft · Magische Minecraft SMP Server" },
-      { property: "og:description", content: "Sluit je aan bij BlokCraft, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "BlokCraft · Magische Minecraft SMP Server" },
-      { name: "twitter:description", content: "Sluit je aan bij BlokCraft, een magische Minecraft SMP (Java + Bedrock). IP: mysticblockssmp.mcsh.io. Join onze Discord community!" },
     ],
     links: [
       {
