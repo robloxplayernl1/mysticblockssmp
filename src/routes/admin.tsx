@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow, type EventRow } from "@/lib/queries";
+import { settingsQuery, eventsQuery, staffQuery, ranksQuery, changelogQuery, rsvpsQuery, pollsQuery, galleryQuery, highlightsQuery, faqQuery, type GalleryItem, type Highlight, type FaqItem, type SiteSettings, type StaffRow, type RankRow, type ChangelogRow, type EventRow } from "@/lib/queries";
 import {
   adminLogin,
   adminLogout,
@@ -41,6 +41,8 @@ import {
   updateEvent,
   type AdminRequestRow,
 } from "@/lib/site.functions";
+import { createGalleryItem, updateGalleryItem, deleteGalleryItem, uploadGalleryImage, createHighlight, updateHighlight, deleteHighlight, uploadHighlightImage, createFaqItem, updateFaqItem, deleteFaqItem } from "@/lib/content.functions";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -62,6 +64,9 @@ const PAGES = [
   { path: "/staff", label: "Staff" },
   { path: "/polls", label: "Peilingen" },
   { path: "/changelog", label: "Changelog" },
+  { path: "/galerij", label: "Galerij" },
+  { path: "/highlights", label: "Highlights" },
+  { path: "/faq", label: "FAQ" },
 ];
 const btnCls =
   "rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm sm:text-base font-medium hover:opacity-90 transition disabled:opacity-50";
@@ -131,7 +136,7 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const logoutFn = useServerFn(adminLogout);
   const [tab, setTab] = useState<
-    "settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "requests" | "admins"
+    "settings" | "events" | "polls" | "staff" | "ranks" | "changelog" | "gallery" | "highlights" | "faq" | "requests" | "admins"
   >("settings");
   const tabs = [
     { id: "settings" as const, label: "Instellingen" },
@@ -140,6 +145,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id: "staff" as const, label: "Staff" },
     { id: "ranks" as const, label: "Ranks" },
     { id: "changelog" as const, label: "Changelog" },
+    { id: "gallery" as const, label: "Galerij" },
+    { id: "highlights" as const, label: "Highlights" },
+    { id: "faq" as const, label: "FAQ" },
     { id: "requests" as const, label: "Verzoeken" },
     { id: "admins" as const, label: "Beheerders" },
   ];
@@ -176,6 +184,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {tab === "staff" && <StaffPanel />}
       {tab === "ranks" && <RanksPanel />}
       {tab === "changelog" && <ChangelogPanel />}
+      {tab === "gallery" && <GalleryPanel />}
+      {tab === "highlights" && <HighlightsPanel />}
+      {tab === "faq" && <FaqPanel />}
       {tab === "requests" && <RequestsPanel />}
       {tab === "admins" && <AdminsPanel />}
     </div>
@@ -394,10 +405,10 @@ function SettingsPanel() {
 
   return (
     <Panel title="Site instellingen">
-      <Field label="Hero titel">
+      <Field label="Titel op de startpagina">
         <input className={inputCls} value={current.hero_title} onChange={(e) => set({ hero_title: e.target.value })} />
       </Field>
-      <Field label="Hero ondertitel">
+      <Field label="Ondertitel op de startpagina">
         <input className={inputCls} value={current.hero_subtitle} onChange={(e) => set({ hero_subtitle: e.target.value })} />
       </Field>
       <Field label="Server IP">

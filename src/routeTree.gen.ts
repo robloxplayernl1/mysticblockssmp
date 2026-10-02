@@ -16,6 +16,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PollsRouteImport } from './routes/polls'
 import { Route as HighlightsRouteImport } from './routes/highlights'
 import { Route as GalerijRouteImport } from './routes/galerij'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DataVerzoekRouteImport } from './routes/data-verzoek'
@@ -60,6 +61,11 @@ const HighlightsRoute = HighlightsRouteImport.update({
 const GalerijRoute = GalerijRouteImport.update({
   id: '/galerij',
   path: '/galerij',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/faq': typeof FaqRoute
   '/galerij': typeof GalerijRoute
   '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/faq': typeof FaqRoute
   '/galerij': typeof GalerijRoute
   '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/data-verzoek': typeof DataVerzoekRoute
   '/disclaimer': typeof DisclaimerRoute
   '/events': typeof EventsRoute
+  '/faq': typeof FaqRoute
   '/galerij': typeof GalerijRoute
   '/highlights': typeof HighlightsRoute
   '/polls': typeof PollsRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/faq'
     | '/galerij'
     | '/highlights'
     | '/polls'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/faq'
     | '/galerij'
     | '/highlights'
     | '/polls'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/data-verzoek'
     | '/disclaimer'
     | '/events'
+    | '/faq'
     | '/galerij'
     | '/highlights'
     | '/polls'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   DataVerzoekRoute: typeof DataVerzoekRoute
   DisclaimerRoute: typeof DisclaimerRoute
   EventsRoute: typeof EventsRoute
+  FaqRoute: typeof FaqRoute
   GalerijRoute: typeof GalerijRoute
   HighlightsRoute: typeof HighlightsRoute
   PollsRoute: typeof PollsRoute
@@ -302,6 +315,13 @@ declare module '@tanstack/react-router' {
       path: '/galerij'
       fullPath: '/galerij'
       preLoaderRoute: typeof GalerijRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   DataVerzoekRoute: DataVerzoekRoute,
   DisclaimerRoute: DisclaimerRoute,
   EventsRoute: EventsRoute,
+  FaqRoute: FaqRoute,
   GalerijRoute: GalerijRoute,
   HighlightsRoute: HighlightsRoute,
   PollsRoute: PollsRoute,
