@@ -1196,3 +1196,168 @@ function PollsPanel() {
     </Panel>
   );
 }
+
+async function fileToBase64(file: File): Promise<string> {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let s = "";
+  for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+function ImageUpload({ id, onUpload }: { id: string; onUpload: (d: { id: string; fileName: string; contentType: string; dataBase64: string }) => Promise<unknown> }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <label className="text-xs text-muted-foreground block">
+      {busy ? "Uploaden..." : "Foto uploaden (max 5MB)"}
+      <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="block mt-1 text-xs" disabled={busy}
+        onChange={async (e) => {
+          const f = e.target.files?.[0];
+          if (!f) return;
+          setBusy(true);
+          try { await onUpload({ id, fileName: f.name, contentType: f.type, dataBase64: await fileToBase64(f) }); }
+          catch (err) { alert(err instanceof Error ? err.message : "Upload mislukt"); }
+          finally { setBusy(false); e.target.value = ""; }
+        }} />
+    </label>
+  );
+}
+
+function GalleryPanel() {
+  const qc = useQueryClient();
+  const { data } = useQuery(galleryQuery);
+  const createFn = useServerFn(createGalleryItem);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const refresh = () => qc.invalidateQueries({ queryKey: ["gallery_items"] });
+  return (
+    <Panel title="Galerij beheren">
+      <div className="grid sm:grid-cols-2 gap-3">
+        <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
+        <Field label="Beschrijving"><input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+      </div>
+      <button className={btnCls} onClick={async () => {
+        await createFn({ data: { title, description, sort_order: data?.length ?? 0 } });
+        setTitle(""); setDescription(""); await refresh();
+      }}>Foto-item toevoegen</button>
+      <p className="text-xs text-muted-foreground">Voeg eerst een item toe en upload daarna de foto.</p>
+      <div className="space-y-2 pt-2">{data?.map((g) => <GalleryRow key={g.id} row={g} onChange={refresh} />)}</div>
+    </Panel>
+  );
+}
+
+function GalleryRow({ row, onChange }: { row: GalleryItem; onChange: () => Promise<unknown> }) {
+  const updateFn = useServerFn(updateGalleryItem);
+  const delFn = useServerFn(deleteGalleryItem);
+  const uploadFn = useServerFn(uploadGalleryImage);
+  const [title, setTitle] = useState(row.title);
+  const [description, setDescription] = useState(row.description);
+  return (
+    <div className="p-3 rounded-lg bg-background/40 border border-border flex flex-col sm:flex-row gap-3">
+      {row.image_url ? <img src={row.image_url} alt="" className="w-full sm:w-32 h-24 object-cover rounded" /> : <div className="w-full sm:w-32 h-24 rounded bg-secondary/40 flex items-center justify-center">🖼️</div>}
+      <div className="flex-1 space-y-2 min-w-0">
+        <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titel" />
+        <input className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Beschrijving" />
+        <ImageUpload id={row.id} onUpload={async (d) => { await uploadFn({ data: d }); await onChange(); }} />
+        <div className="flex gap-2">
+          <button className={btnCls} onClick={async () => { await updateFn({ data: { id: row.id, title, description, sort_order: row.sort_order } }); await onChange(); }}>Opslaan</button>
+          <button className="px-3 py-2 rounded-lg border border-destructive text-destructive text-sm" onClick={async () => { if (!confirm("Verwijderen?")) return; await delFn({ data: { id: row.id } }); await onChange(); }}>Verwijderen</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HighlightsPanel() {
+  const qc = useQueryClient();
+  const { data } = useQuery(highlightsQuery);
+  const createFn = useServerFn(createHighlight);
+  const [title, setTitle] = useState("");
+  const [player, setPlayer] = useState("");
+  const [period, setPeriod] = useState("");
+  const [description, setDescription] = useState("");
+  const refresh = () => qc.invalidateQueries({ queryKey: ["highlights"] });
+  return (
+    <Panel title="Highlights beheren">
+      <div className="grid sm:grid-cols-3 gap-3">
+        <Field label="Titel"><input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
+        <Field label="Speler"><input className={inputCls} value={player} onChange={(e) => setPlayer(e.target.value)} /></Field>
+        <Field label="Periode"><input className={inputCls} value={period} placeholder="bijv. Oktober 2026" onChange={(e) => setPeriod(e.target.value)} /></Field>
+      </div>
+      <Field label="Beschrijving"><textarea rows={3} className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+      <button className={btnCls} onClick={async () => {
+        if (!title) return;
+        await createFn({ data: { title, player_name: player, period, description, is_active: true, sort_order: data?.length ?? 0 } });
+        setTitle(""); setPlayer(""); setPeriod(""); setDescription(""); await refresh();
+      }}>Highlight toevoegen</button>
+      <div className="space-y-2 pt-2">{data?.map((h) => <HighlightRow key={h.id} row={h} onChange={refresh} />)}</div>
+    </Panel>
+  );
+}
+
+function HighlightRow({ row, onChange }: { row: Highlight; onChange: () => Promise<unknown> }) {
+  const updateFn = useServerFn(updateHighlight);
+  const delFn = useServerFn(deleteHighlight);
+  const uploadFn = useServerFn(uploadHighlightImage);
+  const [title, setTitle] = useState(row.title);
+  const [player, setPlayer] = useState(row.player_name);
+  const [period, setPeriod] = useState(row.period);
+  const [description, setDescription] = useState(row.description);
+  const [active, setActive] = useState(row.is_active);
+  return (
+    <div className="p-3 rounded-lg bg-background/40 border border-border flex flex-col sm:flex-row gap-3">
+      {row.image_url ? <img src={row.image_url} alt="" className="w-full sm:w-32 h-24 object-cover rounded" /> : <div className="w-full sm:w-32 h-24 rounded bg-secondary/40 flex items-center justify-center">🏆</div>}
+      <div className="flex-1 space-y-2 min-w-0">
+        <div className="grid sm:grid-cols-3 gap-2">
+          <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titel" />
+          <input className={inputCls} value={player} onChange={(e) => setPlayer(e.target.value)} placeholder="Speler" />
+          <input className={inputCls} value={period} onChange={(e) => setPeriod(e.target.value)} placeholder="Periode" />
+        </div>
+        <textarea rows={2} className={inputCls} value={description} onChange={(e) => setDescription(e.target.value)} />
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} /> Zichtbaar op website</label>
+        <ImageUpload id={row.id} onUpload={async (d) => { await uploadFn({ data: d }); await onChange(); }} />
+        <div className="flex gap-2">
+          <button className={btnCls} onClick={async () => { if (!title) return; await updateFn({ data: { id: row.id, title, player_name: player, period, description, is_active: active, sort_order: row.sort_order } }); await onChange(); }}>Opslaan</button>
+          <button className="px-3 py-2 rounded-lg border border-destructive text-destructive text-sm" onClick={async () => { if (!confirm("Verwijderen?")) return; await delFn({ data: { id: row.id } }); await onChange(); }}>Verwijderen</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FaqPanel() {
+  const qc = useQueryClient();
+  const { data } = useQuery(faqQuery);
+  const createFn = useServerFn(createFaqItem);
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const refresh = () => qc.invalidateQueries({ queryKey: ["faq_items"] });
+  return (
+    <Panel title="FAQ beheren">
+      <Field label="Vraag"><input className={inputCls} value={question} onChange={(e) => setQuestion(e.target.value)} /></Field>
+      <Field label="Antwoord"><textarea rows={3} className={inputCls} value={answer} onChange={(e) => setAnswer(e.target.value)} /></Field>
+      <button className={btnCls} onClick={async () => {
+        if (!question) return;
+        await createFn({ data: { question, answer, sort_order: data?.length ?? 0 } });
+        setQuestion(""); setAnswer(""); await refresh();
+      }}>Vraag toevoegen</button>
+      <div className="space-y-2 pt-2">{data?.map((f) => <FaqRow key={f.id} row={f} onChange={refresh} />)}</div>
+    </Panel>
+  );
+}
+
+function FaqRow({ row, onChange }: { row: FaqItem; onChange: () => Promise<unknown> }) {
+  const updateFn = useServerFn(updateFaqItem);
+  const delFn = useServerFn(deleteFaqItem);
+  const [question, setQuestion] = useState(row.question);
+  const [answer, setAnswer] = useState(row.answer);
+  return (
+    <div className="p-3 rounded-lg bg-background/40 border border-border space-y-2">
+      <input className={inputCls} value={question} onChange={(e) => setQuestion(e.target.value)} />
+      <textarea rows={3} className={inputCls} value={answer} onChange={(e) => setAnswer(e.target.value)} />
+      <div className="flex gap-2">
+        <button className={btnCls} onClick={async () => { if (!question) return; await updateFn({ data: { id: row.id, question, answer, sort_order: row.sort_order } }); await onChange(); }}>Opslaan</button>
+        <button className="px-3 py-2 rounded-lg border border-destructive text-destructive text-sm" onClick={async () => { if (!confirm("Verwijderen?")) return; await delFn({ data: { id: row.id } }); await onChange(); }}>Verwijderen</button>
+      </div>
+    </div>
+  );
+}
