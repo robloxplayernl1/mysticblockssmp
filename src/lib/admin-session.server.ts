@@ -28,7 +28,24 @@ export function safeEqual(a: string, b: string) {
 
 export async function requireAdminSession() {
   const session = await getAdminSession();
-  if (!session.data.admin) throw new Error("Niet ingelogd als admin");
+  const username = session.data.username;
+  if (!session.data.admin || !username) throw new Error("Niet ingelogd als admin");
+  // Re-validate that the account still exists on every request.
+  const mainUser = process.env.ADMIN_USERNAME;
+  let valid = !!mainUser && safeEqual(username, mainUser);
+  if (!valid) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("admin_users" as never)
+      .select("id")
+      .eq("username", username)
+      .maybeSingle();
+    valid = !!data;
+  }
+  if (!valid) {
+    await session.clear();
+    throw new Error("Niet ingelogd als admin");
+  }
   return session;
 }
 
