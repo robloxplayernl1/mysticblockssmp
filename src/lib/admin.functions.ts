@@ -50,9 +50,13 @@ export const adminLogout = createServerFn({ method: "POST" }).handler(async () =
 });
 
 export const adminStatus = createServerFn({ method: "GET" }).handler(async () => {
-  const { getAdminSession } = await import("./admin-session.server");
-  const session = await getAdminSession();
-  return { admin: !!session.data.admin, username: session.data.username ?? "" };
+  const { requireAdminSession } = await import("./admin-session.server");
+  try {
+    const session = await requireAdminSession();
+    return { admin: true, username: session.data.username ?? "" };
+  } catch {
+    return { admin: false, username: "" };
+  }
 });
 
 export type AdminUserRow = { id: string; username: string; created_at: string };
